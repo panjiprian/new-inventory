@@ -20,10 +20,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->foreignId('created_by')->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
-
-
             $table->timestamps();
-
             $table->foreign('category_id')->references('id')->on('categories');
         });
     }

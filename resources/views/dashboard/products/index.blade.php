@@ -18,13 +18,14 @@
                     <a  class="text-sm bg-gray-700 text-white inline-block mt-2 px-2 py-1" href="/excel/products">Export Excel</a>
                 </div>
                 <form method="get" action="/barang" class="form">
-                    <div class="flex">
-                        <div class="border p-1 px-2 rounded-l">
-                          <input id="search" name="search" class="focus:outline-none text-sm" type="text" placeholder="Search Product">
-                        </div>
-                        <button type="submit" class="text-sm bg-gray-700 p-2 rounded-r text-white h-full">Search</button>
+                    <div class="border p-1 px-2 rounded flex items-center gap-2">
+                        <input id="from_date" name="from_date" class="focus:outline-none text-sm w-32" type="text" placeholder="From Date">
+                        <input id="to_date" name="to_date" class="focus:outline-none text-sm w-32" type="text" placeholder="To Date">
+                        <input id="search" name="search" class="focus:outline-none text-sm w-40" type="text" placeholder="Search Product">
+                        <button type="submit" class="text-sm bg-gray-700 p-2 rounded text-white">Search</button>
                     </div>
                 </form>
+
             </div>
 
             <table class="w-full mt-5 text-sm text-gray-600">
@@ -71,9 +72,9 @@
 
                         @if(Auth::user()->role === 'admin')
                         <td class="p-2 flex gap-2">
-                            {{-- <button data-id="{{$product->id}}" class="btn-delete-product bg-red-500 py-1 px-4 rounded text-white">
+                            <button data-id="{{$product->id}}" class="btn-delete-product bg-red-500 py-1 px-4 rounded text-white">
                                 <i class="ri-delete-bin-line"></i>
-                            </button> --}}
+                            </button>
                             <a href="/ubah-barang/{{$product->id}}" class="bg-yellow-400 py-1 px-4 rounded text-white">
                                 <i class="ri-edit-box-line"></i>
                             </a>
@@ -91,4 +92,46 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            // Datepicker untuk From Date
+            $('#from_date').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: false,
+                locale: {
+                    format: 'YYYY-MM-DD',
+                    cancelLabel: 'Clear'
+                }
+            });
+
+            $('#from_date').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('YYYY-MM-DD'));
+            });
+
+            $('#from_date').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val('');
+            });
+
+            // Datepicker untuk To Date
+            $('#to_date').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: false,
+                locale: {
+                    format: 'YYYY-MM-DD',
+                    cancelLabel: 'Clear'
+                }
+            });
+
+            $('#to_date').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('YYYY-MM-DD'));
+            });
+
+            $('#to_date').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val('');
+            });
+        });
+        </script>
+
 @endsection

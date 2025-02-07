@@ -2,79 +2,45 @@
 <html lang="en">
 <head>
   <link rel="icon" href="{{ url('image/favicon.png') }}">
-  <link rel="stylesheet" type="text/css" href="{{ url('css/style.css') }}"><meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    @vite('resources/css/app.css')
-    <title>Login Gloglo Inventory</title>
+  <link rel="stylesheet" type="text/css" href="{{ url('css/style.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  @vite('resources/css/app.css')
+  <title>Login Gloglo Inventory</title>
 </head>
-<body>
-    <div class=" bg-slate-700 h-[100vh]">
-      <div class="container w-full relative flex justify-center">
-        <div class="bg-white p-6 rounded-lg mx-auto w-96 md:w-1/4 absolute top-20">
-          <div class="text-center">
-            <img src="{{ asset('image/gloglo-logo.png') }}" height="110px" width="300px" alt="">
-            <p class="font-bold text-xl mt-5">Log in to Inventory Gloglo</p>
-            <p class="text-slate-400 text-xs mt-2">
-              Enter your email and password below
-            </p>
-          </div>
-          <div class="mt-5">
-            @if (session()->has('error'))
-             <div class="bg-red-500 p-2">
-                <p class="text-xs text-center text-white">{{session()->get('error')}}</p>
-            </div>
-            @endif
-            <form action="{{route('login')}}" method="post">
-                @csrf
-              <label
-                class="text-sm text-slate-400 font-semibold uppercase mt-5 inline-block"
-                for="email"
-              >
-                Email
-              </label>
-              <div class="border @error('email') border-red-500 @enderror mt-2 p-2"
-              >
-                <input
-                  id="email"
-                  class="w-full h-full text-sm focus:outline-none"
-                  type="email"
-                  name="email"
-                  value="{{old('email')}}"
-                  placeholder="Email address"
-                />
-               
-              </div>
-               @error('email') <p class="italic mt-1 text-red-500 text-xs">{{$message}}</p> @enderror
-              <div class="flex justify-between mt-5">
-                <label
-                  class="text-sm text-slate-400 font-semibold uppercase"
-                  for="password"
-                >
-                  Password
-                </label>
-              </div>
-              <div
-              class="border mt-2 p-2 @error('password') border-red-500 @enderror"
-              >
-                <input
-                  id="password"
-                  class="w-full h-full text-sm focus:outline-none"
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                />
-              </div>
-               @error('password') <p class="italic text-red-500 text-xs">{{$message}}</p> @enderror
-              <button
-                class="bg-blue-700 text-white text-center w-full mt-5 rounded-lg py-2 text-sm"
-              >
-                Log in
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
+<body class="bg-gradient-to-br from-blue-900 to-slate-700 min-h-screen flex items-center justify-center">
+  <div class="bg-white p-8 rounded-2xl shadow-lg w-96">
+    <div class="text-center">
+      <img src="{{ asset('image/gloglo-logo.png') }}" height="100px" width="250px" class="mx-auto" alt="Gloglo Logo">
+      <p class="font-bold text-2xl mt-5 text-gray-700">Welcome Back!</p>
+      <p class="text-gray-500 text-sm mt-1">Log in to manage your inventory</p>
     </div>
+    <div class="mt-6">
+      @if (session()->has('error'))
+        <div class="bg-red-500 text-white text-center py-2 rounded-md">
+          <p class="text-sm">{{ session()->get('error') }}</p>
+        </div>
+      @endif
+      <form action="{{ route('login') }}" method="post">
+        @csrf
+        <label class="text-gray-600 font-semibold text-sm mt-4 block">Email</label>
+        <input type="email" name="email" placeholder="Enter your email"
+          class="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none" required>
+
+        <label class="text-gray-600 font-semibold text-sm mt-4 block">Password</label>
+        <input type="password" name="password" placeholder="Enter your password"
+          class="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none" required>
+
+        <button type="submit"
+          class="bg-blue-600 text-white w-full py-3 mt-5 rounded-lg hover:bg-blue-700 transition duration-300">
+          Log in
+        </button>
+      </form>
+      <p class="text-center text-gray-500 text-sm mt-4">
+        Don't have an account? <a href="#" class="text-blue-600 font-semibold">Sign Up</a>
+      </p>
+    </div>
+  </div>
 </body>
 </html>

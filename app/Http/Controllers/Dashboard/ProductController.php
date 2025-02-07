@@ -13,6 +13,7 @@ use App\Models\Supplier;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Process;
+use Carbon\Carbon;
 
 class ProductController extends Controller
 {
@@ -39,6 +40,17 @@ class ProductController extends Controller
         if ($request->has('search')) {
             $search = $request->input('search');
             $query->where('products.name', 'LIKE', "%{$search}%");
+        }
+
+        if ($request->has('start_date') && $request->has('end_date')) {
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+        }
+
+        if ($request->has('from_date') && $request->has('to_date')) {
+            $from = Carbon::parse($request->input('from_date'))->startOfDay();
+            $to = Carbon::parse($request->input('to_date'))->endOfDay();
+            $query->whereBetween('products.created_at', [$from, $to]);
         }
 
         $products = $query->paginate(10);
