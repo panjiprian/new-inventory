@@ -56,13 +56,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/input-petugas', [UserController::class, 'createOfficer'])->middleware('role:admin');
     Route::post('/input-petugas', [UserController::class, 'storeOfficer'])->middleware('role:admin');
     Route::get('/ubah-petugas/{id}', [UserController::class, 'editOfficer'])->middleware('role:admin');
-    Route::post('/ubah-petugas/{id}', [UserController::class, 'updateOfficer'])->middleware('role:admin');
+    Route::put('/ubah-petugas/{id}', [UserController::class, 'updateOfficer']);
+
 
     Route::get('/input-admin', [UserController::class, 'createAdmin']);
     Route::post('/input-admin', [UserController::class, 'storeAdmin']);
     Route::delete('/hapus-admin/{id}', [UserController::class, 'delete']);
     Route::get('/ubah-admin/{id}', [UserController::class, 'editAdmin']);
-    Route::post('/ubah-admin/{id}', [UserController::class, 'updateAdmin']);
+    Route::put('/ubah-admin/{id}', [UserController::class, 'updateAdmin']);
+
 
     Route::get('/barang-masuk', [ProductSuppliesController::class, 'indexIncome']);
     Route::get('/input-barang-masuk', [ProductSuppliesController::class, 'createIncome']);

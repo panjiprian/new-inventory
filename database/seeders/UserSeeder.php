@@ -18,7 +18,9 @@ class UserSeeder extends Seeder
             'name' => "Frisca Yunita Ashari",
             'email' => "admin@gmail.com",
             'password'=>Hash::make('password'),
-            'role'=>'admin'
+            'role'=>'admin',
+            'phone' => '+6281234567890'
+
         ]);
 
     }

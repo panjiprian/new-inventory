@@ -30,35 +30,32 @@
                         <td class="p-2">No</td>
                         <td class="p-2">Admin Name</td>
                         <td class="p-2">Email</td>
+                        <td class="p-2">Phone</td>
                         <td class="p-2">Role</td>
-                        <td class="p-2">Action  </td>
+                        <td class="p-2">Action</td>
                     </tr>
                 </thead>
                 <tbody>
-                    @php
-                        $noAdmin = 1;
-                    @endphp
-                    @foreach ($admins as $admin)
+                    @foreach ($admins as $index => $admin)
                         <tr class="border-b p-2">
-                        <td class="p-2">{{$loop->iteration}}</td>
-                        <td class="p-2">{{$admin->name}}</td>
-                        <td class="p-2">{{$admin->email}}</td>
-                        <td class="p-2">{{$admin->role}}</td>
-                        <td class="p-2 flex gap-2">
-                            <button data-id="{{$admin->id}}" class="btn-delete-admin bg-red-500 py-1 px-4 rounded text-white">
-                                <i class="ri-delete-bin-line"></i>
-                            </button>
-                            <a href="/ubah-admin/{{$admin->id}}" class="bg-yellow-400 py-1 px-4 rounded text-white">
-                                <i class="ri-edit-box-line"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    @php
-                        $noAdmin++;
-                    @endphp
+                            <td class="p-2">{{ $index + $admins->firstItem() }}</td>
+                            <td class="p-2">{{ $admin->name }}</td>
+                            <td class="p-2">{{ $admin->email }}</td>
+                            <td class="p-2">{{ $admin->phone ?? '-' }}</td> <!-- Menampilkan phone -->
+                            <td class="p-2">{{ $admin->role }}</td>
+                            <td class="p-2 flex gap-2">
+                                <button data-id="{{ $admin->id }}" class="btn-delete-admin bg-red-500 py-1 px-4 rounded text-white">
+                                    <i class="ri-delete-bin-line"></i>
+                                </button>
+                                <a href="/ubah-admin/{{ $admin->id }}" class="bg-yellow-400 py-1 px-4 rounded text-white">
+                                    <i class="ri-edit-box-line"></i>
+                                </a>
+                            </td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
+
             <div class="mt-5">
                 {{$admins->links('pagination::tailwind')}}
             </div>

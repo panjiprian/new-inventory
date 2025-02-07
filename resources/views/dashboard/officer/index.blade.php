@@ -30,32 +30,28 @@
                         <td class="p-2">No</td>
                         <td class="p-2">Officer Name</td>
                         <td class="p-2">Email</td>
+                        <td class="p-2">Phone</td>
                         <td class="p-2">Role</td>
                         <td class="p-2">Action</td>
                     </tr>
                 </thead>
                 <tbody>
-                    @php
-                        $no = 1;
-                    @endphp
                     @foreach ($officers as $officer)
                         <tr class="border-b p-2">
-                        <td class="p-2">{{$loop->iteration}}</td>
-                        <td class="p-2">{{$officer->name}}</td>
-                        <td class="p-2">{{$officer->email}}</td>
-                        <td class="p-2">{{$officer->role}}</td>
-                        <td class="p-2 flex gap-2">
-                            <button data-id="{{$officer->id}}" class="btn-delete-officer bg-red-500 py-1 px-4 rounded text-white">
-                                <i class="ri-delete-bin-line"></i>
-                            </button>
-                            <a href="/ubah-petugas/{{$officer->id}}" class="bg-yellow-400 py-1 px-4 rounded text-white">
-                                <i class="ri-edit-box-line"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    @php
-                        $no++;
-                    @endphp
+                            <td class="p-2">{{ $loop->iteration }}</td>
+                            <td class="p-2">{{ $officer->name }}</td>
+                            <td class="p-2">{{ $officer->email }}</td>
+                            <td class="p-2">{{ $officer->phone ?? '-' }}</td>
+                            <td class="p-2">{{ ucfirst($officer->role) }}</td>
+                            <td class="p-2 flex gap-2">
+                                <button data-id="{{$officer->id}}" class="btn-delete-officer bg-red-500 py-1 px-4 rounded text-white">
+                                    <i class="ri-delete-bin-line"></i>
+                                </button>
+                                <a href="/ubah-petugas/{{$officer->id}}" class="bg-yellow-400 py-1 px-4 rounded text-white">
+                                    <i class="ri-edit-box-line"></i>
+                                </a>
+                            </td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>

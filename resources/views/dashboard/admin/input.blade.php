@@ -11,35 +11,56 @@
             @csrf
             <div class="mt-3">
                 <label class="text-sm text-gray-600" for="name">Admin Name</label>
-                <div class="border-2 p-1 @error('name')  border-red-400  @enderror">
+                <div class="border-2 p-1 @error('name') border-red-400 @enderror">
                     <input autocomplete="off" name="name" value="{{old('name')}}" class="w-full h-full focus:outline-none text-sm" id="name" type="text">
                 </div>
                 @error('name')
                     <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
                 @enderror
             </div>
+
             <div class="mt-3">
                 <label class="text-sm text-gray-600" for="email">Email</label>
-                <div class="@error('email')  border-red-400  @enderror border-2 p-1">
-                    <input autocomplete="off" type="email" value="{{old('email')}}"  name="email" class="text-sm w-full h-full focus:outline-none" id="email" type="text">
+                <div class="border-2 p-1 @error('email') border-red-400 @enderror">
+                    <input autocomplete="off" type="email" value="{{old('email')}}" name="email" class="text-sm w-full h-full focus:outline-none" id="email">
                 </div>
                 @error('email')
                     <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
                 @enderror
             </div>
+
             <div class="mt-3">
-                <label class="text-sm text-gray-600" for="password">Password</label>
-                <div class="@error('password')  border-red-400  @enderror border-2 p-1">
-                    <input autocomplete="off" type="password" value="{{old('password')}}"  name="password" class="text-sm w-full h-full focus:outline-none" id="password" type="text">
+                <label class="text-sm text-gray-600" for="phone">Phone Number</label>
+                <div class="border-2 p-1 @error('phone') border-red-400 @enderror">
+                    <input autocomplete="off" type="tel" name="phone" id="phone" class="text-sm w-full h-full focus:outline-none" value="+62">
+            <script>
+                document.getElementById("phone").addEventListener("input", function (e) {
+                    if (!e.target.value.startsWith("+62")) {
+                        e.target.value = "+62";
+                    }
+                });
+            </script>
                 </div>
-                 @error('password')
+                @error('phone')
                     <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
                 @enderror
             </div>
+
             <div class="mt-3">
-                <button class="bg-gray-600 w-full text-white p-2 rounded text-sm">Save Data</button>
+                <label class="text-sm text-gray-600" for="password">Password</label>
+                <div class="border-2 p-1 @error('password') border-red-400 @enderror">
+                    <input autocomplete="off" type="password" name="password" class="text-sm w-full h-full focus:outline-none" id="password">
+                </div>
+                @error('password')
+                    <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
+                @enderror
             </div>
-    </form>
+
+            <div class="mt-5">
+                <button class="bg-gray-600 w-full text-white py-2 rounded text-sm font-semibold">Save Data</button>
+            </div>
+        </form>
+
     </div>
 </div>
 @endsection

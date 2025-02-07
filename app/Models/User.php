@@ -21,9 +21,16 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role'
+        'role',
+        'phone'
     ];
 
+    public function setPhoneAttribute($value)
+    {
+        // Pastikan nomor telepon selalu diawali dengan +62
+        $formattedPhone = preg_replace('/^0/', '+62', $value);
+        $this->attributes['phone'] = $formattedPhone;
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

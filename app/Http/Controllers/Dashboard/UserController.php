@@ -41,14 +41,16 @@ class UserController extends Controller
         $this->validate($request, [
                 'name'=>['required'],
                 'email'=>['required'],
-                'password'=>['required']
+                'password'=>['required'],
+                'phone' => 'nullable|regex:/^\+62[0-9]{9,13}$/'
         ]);
 
         $userCreated = User::create([
             'name'=>$request->name,
             'email'=>$request->email,
             'password'=>Hash::make($request->password),
-            'role'=>'officer'
+            'role'=>'officer',
+            'phone' => $request->phone
         ]);
 
         if($userCreated){
@@ -65,7 +67,8 @@ class UserController extends Controller
         $this->validate($request, [
                 'name'=>['required'],
                 'email'=>['required'],
-                'password'=>['required']
+                // 'password'=>['required'],
+                // 'phone' => 'nullable|regex:/^\+62[0-9]{9,13}$/'
         ]);
 
         $officer = User::findOrFail($id);
@@ -80,7 +83,8 @@ class UserController extends Controller
             'name'=>$request->name,
             'email'=>$request->email,
             'password'=>$password,
-            'role'=>'officer'
+            'role'=>'officer',
+            'phone' => $request->phone
         ]);
 
         if($updated){
@@ -97,14 +101,17 @@ class UserController extends Controller
         $this->validate($request, [
                 'name'=>['required'],
                 'email'=>['required'],
-                'password'=>['required']
+                'password'=>['required'],
+                'phone' => 'nullable|regex:/^\+62[0-9]{9,13}$/'
+
         ]);
 
         $userCreated = User::create([
             'name'=>$request->name,
             'email'=>$request->email,
             'password'=>Hash::make($request->password),
-            'role'=>'admin'
+            'role'=>'admin',
+            'phone' => $request->phone
         ]);
 
         if($userCreated){
@@ -135,7 +142,8 @@ class UserController extends Controller
         'name'=>$request->name,
         'email'=>$request->email,
         'password'=>$password,
-        'role'=>'admin'
+        'role'=>'admin',
+        'phone' => $request->phone
     ]);
 
     if($updated){
