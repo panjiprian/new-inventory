@@ -14,16 +14,27 @@ class VariantController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Variant::with(['category', 'creator', 'updater', 'products']);
+        $query = Variant::query()
+            ->leftJoin('categories', 'variants.category_id', '=', 'categories.id')
+            ->leftJoin('users as creators', 'variants.created_by', '=', 'creators.id')
+            ->leftJoin('users as updaters', 'variants.updated_by', '=', 'updaters.id')
+            ->select(
+                'variants.*',
+                'categories.name as category_name',
+                'creators.name as creator_name',
+                'updaters.name as updater_name'
+            );
 
         if ($request->has('search')) {
-            $query->where('name', 'LIKE', "%{$request->search}%")
-                  ->orWhere('code', 'LIKE', "%{$request->search}%");
+            $query->where('variants.name', 'LIKE', "%{$request->search}%")
+                  ->orWhere('variants.code', 'LIKE', "%{$request->search}%");
         }
 
         $variants = $query->paginate(10);
+
         return view('dashboard.variant.index', compact('variants'));
     }
+
 
     public function create()
     {
