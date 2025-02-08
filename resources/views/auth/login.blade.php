@@ -38,7 +38,7 @@
         </button>
       </form>
       <p class="text-center text-gray-500 text-sm mt-4">
-        Don't have an account? <a href="#" class="text-blue-600 font-semibold">Sign Up</a>
+        Don't have an account? <a class="text-blue-600 font-semibold">Contact Admin</a>
       </p>
     </div>
   </div>

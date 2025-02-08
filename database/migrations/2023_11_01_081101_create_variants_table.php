@@ -7,14 +7,15 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Jalankan migrasi.
+     * Jalankan migrasi untuk membuat tabel variants.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('variants', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->unique();
-            $table->string('name')->unique();
+            $table->foreignId('category_id')->constrained()->onDelete('cascade')->change();
+            $table->string('code', 10)->unique(); // Kode varian unik
+            $table->string('name', 50); // Nama varian
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
@@ -25,10 +26,10 @@ return new class extends Migration
     }
 
     /**
-     * Reverse migrasi.
+     * Rollback migrasi untuk menghapus tabel variants.
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('variants');
     }
 };

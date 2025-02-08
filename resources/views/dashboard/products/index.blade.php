@@ -7,7 +7,7 @@
     <div class=" text-green-400 text-sm font-bold capitalize">{{session()->get('message')}}</div>
 </div>
 @endif
-    <div class="container px-4">
+    <div class="w-full flex-wrap gap-4">
         <div class="bg-white mt-5 p-5 rounded-lg">
             <div class="flex justify-between">
                 <div class="text-left">
@@ -25,17 +25,19 @@
                         <button type="submit" class="text-sm bg-gray-700 p-2 rounded text-white">Search</button>
                     </div>
                 </form>
-
             </div>
 
             <table class="w-full mt-5 text-sm text-gray-600">
                 <thead>
                     <tr class="font-bold border-b-2 p-2">
                         <td class="p-2">No</td>
+                        <td class="p-2">Product Code</td>
                         <td class="p-2">Product Name</td>
+                        <td class="p-2">Description</td>
                         <td class="p-2">Price</td>
                         <td class="p-2">Current Stock</td>
                         <td class="p-2">Category</td>
+                        <td class="p-2">Variant</td>
                         <td class="p-2">Photo</td>
                         <td class="p-2">Create</td>
                         <td class="p-2">Update</td>
@@ -43,33 +45,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php
-                        $noProduct = 1;
-                    @endphp
                     @foreach ($products as $product)
                         <tr class="border-b p-2">
                         <td class="p-2">{{$loop->iteration}}</td>
+                        <td class="p-2">{{$product->code}}</td>
                         <td class="p-2">{{$product->name}}</td>
+                        <td class="p-2">{{$product->description}}</td>
                         <td class="p-2">Rp.{{number_format($product->price,0) }}</td>
                         <td class="p-2">{{$product->stock}}</td>
-                        <td class="p-2">{{ $product->category_name ?? '-' }}</td>
+                        <td class="p-2">{{ $product->category->name ?? '-' }}</td>
+                        <td class="p-2">{{ $product->variant->name ?? '-' }}</td>
                         <td class="p-2 w-[150px]"><img src="{{asset('storage/'.$product->image)}}"/></td>
                         <td class="p-2">
-                            @if ($product->created_user_name)  <!-- Cek apakah created_user_name ada -->
+                            @if ($product->created_user_name)
                                 {{ $product->created_user_name }} ({{ \Carbon\Carbon::parse($product->created_at)->format('d M Y') }})
                             @else
                                 -
                             @endif
                         </td>
-
                         <td class="p-2">
-                            @if ($product->updated_user_name)  <!-- Cek apakah updated_user_name ada -->
+                            @if ($product->updated_user_name)
                                 {{ $product->updated_user_name }} ({{ \Carbon\Carbon::parse($product->updated_at)->format('d M Y') }})
                             @else
                                 -
                             @endif
                         </td>
-
                         @if(Auth::user()->role === 'admin')
                         <td class="p-2 flex gap-2">
                             <button data-id="{{$product->id}}" class="btn-delete-product bg-red-500 py-1 px-4 rounded text-white">
@@ -81,9 +81,6 @@
                         </td>
                         @endif
                     </tr>
-                    @php
-                        $noProduct++;
-                    @endphp
                     @endforeach
                 </tbody>
             </table>
@@ -92,46 +89,4 @@
             </div>
         </div>
     </div>
-    <script>
-        $(document).ready(function() {
-            // Datepicker untuk From Date
-            $('#from_date').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                autoUpdateInput: false,
-                locale: {
-                    format: 'YYYY-MM-DD',
-                    cancelLabel: 'Clear'
-                }
-            });
-
-            $('#from_date').on('apply.daterangepicker', function(ev, picker) {
-                $(this).val(picker.startDate.format('YYYY-MM-DD'));
-            });
-
-            $('#from_date').on('cancel.daterangepicker', function(ev, picker) {
-                $(this).val('');
-            });
-
-            // Datepicker untuk To Date
-            $('#to_date').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                autoUpdateInput: false,
-                locale: {
-                    format: 'YYYY-MM-DD',
-                    cancelLabel: 'Clear'
-                }
-            });
-
-            $('#to_date').on('apply.daterangepicker', function(ev, picker) {
-                $(this).val(picker.startDate.format('YYYY-MM-DD'));
-            });
-
-            $('#to_date').on('cancel.daterangepicker', function(ev, picker) {
-                $(this).val('');
-            });
-        });
-        </script>
-
 @endsection

@@ -7,7 +7,7 @@
     <div class=" text-green-400 text-sm font-bold capitalize">{{session()->get('message')}}</div>
 </div>
 @endif
-    <div class="container px-4">
+    <div class="w-full flex-wrap gap-4">
         <div class="bg-white mt-5 p-5 rounded-lg">
             <div class="flex justify-between">
                 <div class="text-left">

@@ -67,8 +67,8 @@ class UserController extends Controller
         $this->validate($request, [
                 'name'=>['required'],
                 'email'=>['required'],
-                // 'password'=>['required'],
-                // 'phone' => 'nullable|regex:/^\+62[0-9]{9,13}$/'
+                'password'=>['required'],
+                'phone' => 'nullable|regex:/^\+62[0-9]{9,13}$/'
         ]);
 
         $officer = User::findOrFail($id);

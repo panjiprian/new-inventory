@@ -30,7 +30,7 @@
             <div class="mt-3">
                 <label class="text-sm text-gray-600" for="image">Photo</label>
                 <div class="@error('image')  border-red-400  @enderror border-2 p-1">
-                    <input type="file" name="image" class="text-sm w-full h-full focus:outline-none" id="image" type="text">
+                    <input type="file" name="image" class="text-sm w-full h-full focus:outline-none" id="image">
                 </div>
                  @error('image')
                     <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
@@ -38,9 +38,9 @@
             </div>
             <div class="flex gap-1 mt-3">
                 <div class="w-full">
-                    <label class="text-sm text-gray-600"  for="category">Category</label>
+                    <label class="text-sm text-gray-600" for="category">Category</label>
                     <div class="border">
-                        <select name="category_id" class="w-full text-black p-2 text-sm bg-transparent focus:outline-none" name="" id="">
+                        <select name="category_id" class="w-full text-black p-2 text-sm bg-transparent focus:outline-none" id="category">
                             @foreach($categories as $category)
                                 <option class="text-sm" value="{{$category->id}}">{{$category->name}}</option>
                             @endforeach
@@ -48,12 +48,47 @@
                     </div>
                 </div>
             </div>
+            <div class="flex gap-1 mt-3">
+                <div class="w-full">
+                    <label class="text-sm text-gray-600" for="variant">Variant</label>
+                    <div class="border">
+                        <select name="variant_id" class="w-full text-black p-2 text-sm bg-transparent focus:outline-none" id="variant">
+                            @foreach($variants as $variant)
+                                <option class="text-sm" value="{{$variant->id}}">{{$variant->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3">
+                <label class="text-sm text-gray-600" for="unique_code">Unique Code</label>
+                <div class="border-2 p-1 @error('unique_code') border-red-400 @enderror">
+                    <input name="unique_code" value="{{old('unique_code')}}" class="text-black w-full h-full focus:outline-none text-sm" id="unique_code" type="text" readonly>
+                </div>
+                @error('unique_code')
+                    <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
+                @enderror
+            </div>
             <div class="mt-3">
                 <button class="bg-gray-600 text-white w-full p-2 rounded text-sm">Save Product</button>
             </div>
-        </div>
-    </form>
+        </form>
     </div>
 </div>
-@endsection
+<script>
+    document.getElementById('category').addEventListener('change', generateUniqueCode);
+    document.getElementById('variant').addEventListener('change', generateUniqueCode);
 
+    function generateUniqueCode() {
+        let category = document.getElementById('category').value;
+        let variant = document.getElementById('variant').value;
+        if (category && variant) {
+            fetch(`/generate-code?category_id=${category}&variant_id=${variant}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('unique_code').value = data.code;
+                });
+        }
+    }
+</script>
+@endsection

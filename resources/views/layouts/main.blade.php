@@ -27,8 +27,7 @@
 </head>
 <body class="text-black">
 
-    {{-- sidebar start --}}
-   <div class="w-64 bg-gray-900 h-full p-4 fixed top-0 left-0">
+    <div class="w-64 bg-gray-900 h-full p-4 fixed top-0 left-0">
      <a href="#" class="flex items-center pb-4 border-b border-b-gray-800">
         <img src="{{ asset('image/gloglo-logo.png') }}" height="110px" width="300px" alt="">
       </a>
@@ -58,22 +57,24 @@
             <span class="text-sm">Category</span>
          </a>
         </li>
+        <li class="mb-1 group">
+            <a href="/varian" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
+               <i class="ri-store-line mr-3 text-lg"></i>
+               <span class="text-sm">Variant</span>
+            </a>
+           </li>
         <li class="mb-1 mt-5 group">
          <a href="/barang-masuk" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
             <i class="ri-file-add-fill mr-3 text-lg"></i>
             <span class="text-sm">Receiving</span>
          </a>
         </li>
-
         <li class="mb-1 group">
          <a href="/barang-keluar" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
             <i class="ri-folder-reduce-fill mr-3 text-lg"></i>
             <span class="text-sm">Dispatching</span>
          </a>
         </li>
-
-
-
         @if(Auth::user()->role === 'admin')
         <li class="mb-1 mt-10 group">
          <a href="/petugas" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
@@ -81,7 +82,6 @@
             <span class="text-sm">Officer</span>
          </a>
         </li>
-
         <li class="mb-1 group">
          <a href="/admin" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
             <i class="ri-admin-line mr-3 text-lg"></i>
@@ -89,15 +89,13 @@
          </a>
         </li>
         @endif
-
-
         <li class="mb-1 group mt-5">
             <a href="/" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
                <i class="ri-book-read-line text-lg mr-3"></i>
                <span class="text-sm">Manual Book</span>
             </a>
-           </li>
-         <li class="mb-1 group mt-5">
+        </li>
+        <li class="mb-1 group mt-5">
          <a href="/logout" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
             <i class="ri-logout-circle-line text-lg mr-3"></i>
             <span class="text-sm">Logout</span>
@@ -105,22 +103,14 @@
         </li>
       </ul>
    </div>
-   {{-- sidebar end --}}
 
    <main class="md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 min-h-screen">
-
-    {{-- navbar start --}}
     <div class="bg-white py-2 px-4 flex items-center justify-between shadow-md shadow-black/5 sticky top-0 left-0 z-30">
         <div class="mr-2 flex items-center">
             <p class="text-sm text-gray-600">{{Auth::user()->name}}</p>
         </div>
     </div>
-
-    {{-- navbar end --}}
-
-    {{-- main content --}}
     @yield('container')
-    {{-- main content end --}}
 </main>
     <script src="{{ asset('js/index.js') }}"></script>
     @yield('js')

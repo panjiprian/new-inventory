@@ -11,16 +11,16 @@
         <div class="bg-white mt-5 p-5 rounded-lg">
             <div class="flex justify-between">
                 <div class="text-left">
-                    <h2 class="text-gray-600 font-bold">Categories</h2>
+                    <h2 class="text-gray-600 font-bold">Variants</h2>
                     @if(Auth::user()->role === 'admin')
-                    <a href="/input-kategori" class="text-sm bg-gray-700 text-white inline-block mt-2 px-2 py-1">Input Category</a>
+                    <a href="/input-varian" class="text-sm bg-gray-700 text-white inline-block mt-2 px-2 py-1">Input Variant</a>
                     @endif
-                    <a  class="text-sm bg-gray-700 text-white inline-block mt-2 px-2 py-1" href="/excel/categories">Export Excel</a>
+                    <a  class="text-sm bg-gray-700 text-white inline-block mt-2 px-2 py-1" href="/excel/variants">Export Excel</a>
                 </div>
-                <form method="get" action="/categories" class="form">
+                <form method="get" action="/variants" class="form">
                     <div class="flex">
                         <div class="border p-1 px-2 rounded-l">
-                          <input id="search" name="search" class="focus:outline-none text-sm" type="text" placeholder="Search Category">
+                          <input id="search" name="search" class="focus:outline-none text-sm" type="text" placeholder="Search Variant">
                         </div>
                         <button type="submit" class="text-sm bg-gray-700 p-2 rounded-r text-white h-full">Search</button>
                     </div>
@@ -31,8 +31,9 @@
                 <thead>
                     <tr class="font-bold border-b-2 p-2">
                         <td class="p-2">No</td>
-                        <td class="p-2">Category Code</td>
-                        <td class="p-2">Category Name</td>
+                        <td class="p-2">Variant Code</td>
+                        <td class="p-2">Variant Name</td>
+                        <td class="p-2">Category</td>
                         <td class="p-2">Create</td>
                         <td class="p-2">Update</td>
                         <td class="p-2">Total Products</td>
@@ -40,17 +41,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($categories as $category)
+                    @foreach ($variants as $variant)
                         <tr class="border-b p-2">
                         <td class="p-2">{{$loop->iteration}}</td>
-                        <td class="p-2">{{$category->code}}</td>
-                        <td class="p-2">{{$category->name}}</td>
-                        <td>{{ $category->creator_name ?? '-' }}</td>
-                        <td>{{ $category->updater_name ?? '-' }}</td>
-                        <td class="p-2">{{$category->products->count()}}</td>
+                        <td class="p-2">{{$variant->code}}</td>
+                        <td class="p-2">{{$variant->name}}</td>
+                        <td class="p-2">{{$variant->category->name ?? '-'}}</td>
+                        <td>{{ $variant->creator_name ?? '-' }}</td>
+                        <td>{{ $variant->updater_name ?? '-' }}</td>
+                        <td class="p-2">{{ $variant->products->count() ?? 0 }}</td>
+
                         @if(Auth::user()->role === 'admin')
                         <td class="p-2 flex gap-2">
-                            <a href="/ubah-kategori/{{$category->id}}" class="bg-yellow-400 py-1 px-4 rounded text-white">
+                            <a href="/ubah-varian/{{$variant->id}}" class="bg-yellow-400 py-1 px-4 rounded text-white">
                                 <i class="ri-edit-box-line"></i>
                             </a>
                         </td>
@@ -60,7 +63,7 @@
                 </tbody>
             </table>
             <div class="mt-5">
-                {{$categories->links('pagination::tailwind')}}
+                {{$variants->links('pagination::tailwind')}}
             </div>
         </div>
     </div>

@@ -8,6 +8,8 @@ use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\ProductSuppliesController;
 use App\Http\Controllers\Dashboard\SupplierController;
 use App\Http\Controllers\Dashboard\UserController;
+use App\Http\Controllers\Dashboard\VariantController;
+use App\Models\Variant;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +50,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/ubah-kategori/{id}', [CategoryController::class, 'edit']);
     Route::post('/ubah-kategori/{id}', [CategoryController::class, 'update']);
     Route::get('/excel/kategori',[CategoryController::class,'exportExcel']);
+
+    Route::get('/varian', [VariantController::class, 'index']);
+    Route::get('/input-varian', [VariantController::class, 'create']);
+    Route::post('/input-varian', [VariantController::class, 'store']);
+    Route::delete('/hapus-varian/{id}', [VariantController::class, 'delete']);
+    Route::get('/ubah-varian/{id}', [VariantController::class, 'edit']);
+    Route::put('/ubah-varian/{id}', [VariantController::class, 'update']);
+    Route::get('/excel/varian',[VariantController::class,'exportExcel']);
+
 
 
     Route::get('/admin', [UserController::class, 'admin'])->middleware('role:admin');

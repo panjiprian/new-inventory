@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
-   <div class="container px-4">
+<div class="flex flex-wrap gap-4 justify-start">
     <div class="p-5 mt-5 rounded-lg">
         <div class="text-left">
             <h1 class="text-gray-600 font-semibold">Overview</h1>
@@ -18,8 +18,6 @@
         <div class="bg-white rounded text-center hover:border-blue-500 w-1/3 p-10">
               <h2 class="font-bold text-4xl">{{$countProductOutcome}}</h2>
             <p class="text-sm text-gray-600 mt-2">Outcoming Goods</p>
-        </div>
-
         </div>
     </div>
    </div>
