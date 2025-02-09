@@ -13,6 +13,8 @@ use App\Models\Variant;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
+
 
 class ProductController extends Controller
 {
@@ -143,30 +145,37 @@ class ProductController extends Controller
 
     public function generateNoproduct(Request $request)
     {
+        // Cari kategori dan varian berdasarkan ID yang dikirim dari request
         $category = Category::find($request->category_id);
         $variant = Variant::find($request->variant_id);
 
+        // Jika kategori atau varian tidak ditemukan, lempar error
         if (!$category || !$variant) {
-            return response()->json(['error' => 'Category or Variant not found'], 400);
+            throw new \Exception('Category or Variant not found');
         }
 
+        // Ambil produk terakhir berdasarkan kategori & varian
         $lastProduct = Product::where('category_id', $request->category_id)
                               ->where('variant_id', $request->variant_id)
                               ->orderBy('code', 'desc')
                               ->first();
 
         if ($lastProduct) {
+            // Ambil 4 digit terakhir dari kode produk sebelumnya
             preg_match('/(\d{4})$/', $lastProduct->code, $matches);
             $lastCode = isset($matches[1]) ? (int) $matches[1] : 0;
             $nextNumber = str_pad($lastCode + 1, 4, '0', STR_PAD_LEFT);
         } else {
+            // Jika belum ada produk dengan kategori & varian tersebut, mulai dari 0001
             $nextNumber = '0001';
         }
 
+        // Format kode produk sesuai aturan: [KODE_KATEGORI]-[KODE_VARIAN]-[ID_UNIK_4_ANGKA]
         $uniqueCode = strtoupper($category->code . '-' . $variant->code . '-' . $nextNumber);
 
-        return response()->json(['unique_code' => $uniqueCode]); // ✅ Kembalikan JSON
+        return $uniqueCode; // ✅ Return string langsung
     }
+
 
 
     public function getVariants(Request $request)
