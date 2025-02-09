@@ -83,6 +83,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/ubah-barang-masuk/{id}', [ProductSuppliesController::class, 'updateIncome']);
     Route::post('/input-barang-masuk', [ProductSuppliesController::class, 'storeIncome']);
     Route::delete('/hapus-barang-masuk/{id}', [ProductSuppliesController::class,'deleteProductSupply']);
+    Route::post('/generate-noproduct', [ProductController::class, 'generateNoproduct'])->name('generate-noproduct');
 
     Route::get('/barang-keluar', [ProductSuppliesController::class, 'indexOutcome']);
     Route::get('/input-barang-keluar', [ProductSuppliesController::class, 'createOutcome']);

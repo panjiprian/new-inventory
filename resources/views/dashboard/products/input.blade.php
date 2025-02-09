@@ -50,6 +50,7 @@
                     <label class="text-sm text-gray-600" for="category">Category</label>
                     <div class="border">
                         <select name="category_id" class="w-full text-black p-2 text-sm bg-transparent focus:outline-none" id="category">
+                            <option value="" selected disabled>Pilih Category</option>
                             @foreach($categories as $category)
                                 <option class="text-sm" value="{{$category->id}}">{{$category->name}}</option>
                             @endforeach
@@ -62,6 +63,7 @@
                     <label class="text-sm text-gray-600" for="variant">Variant</label>
                     <div class="border">
                         <select name="variant_id" class="w-full text-black p-2 text-sm bg-transparent focus:outline-none" id="variant">
+                            <option value="" selected disabled>Pilih Variant</option>
                             @foreach($variants as $variant)
                                 <option class="text-sm" value="{{$variant->id}}">{{$variant->name}}</option>
                             @endforeach
@@ -91,4 +93,36 @@
         }
     }
 </script> --}}
+
+<script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#category, #variant').on('change', function () {
+            let categoryId = $('#category').val();
+            let variantId = $('#variant').val();
+
+            if (categoryId && variantId) {
+                $.ajax({
+                    url: "{{ route('generate-noproduct') }}",
+                    type: "POST",
+                    data: {
+                        category_id: categoryId,
+                        variant_id: variantId,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function (response) {
+                        if (response.unique_code) {
+                            $('#unique_code').val(response.unique_code);
+                        }
+                    },
+                    error: function (xhr) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            }
+        });
+    });
+</script>
+</script>
 @endsection

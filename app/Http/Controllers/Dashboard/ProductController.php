@@ -148,4 +148,33 @@ class ProductController extends Controller
     {
         return Excel::download(new ProductExport, 'product.xlsx');
     }
+
+    public function generateNoproduct(Request $request)
+    {
+        $categoryId = $request->category_id;
+        $variantId = $request->variant_id;
+        $category = Category::find($categoryId);
+        $variant = Variant::find($variantId);
+
+        if (!$category || !$variant) {
+            return response()->json(['error' => 'Category or Variant not found'], 400);
+        }
+        $lastProduct = Product::where('category_id', $categoryId)
+                            ->where('variant_id', $variantId)
+                            ->orderBy('id', 'desc')
+                            ->first();
+
+                            // dd( $lastProduct);
+
+                            if ($lastProduct) {
+                                $lastCode = (int) ltrim(substr($lastProduct->code, -4), '0'); // Ambil angka terakhir tanpa menghapus nol
+                                $nextNumber = str_pad($lastCode + 1, 4, '0', STR_PAD_LEFT); // Tambahkan angka dan tetap 4 digit
+                            } else {
+                                $nextNumber = '0001';
+                            }
+
+                            $uniqueCode = strtoupper($category->code . '-' . $variant->code . '-' . $nextNumber);
+
+        return response()->json(['unique_code' => $uniqueCode]);
+    }
 }
