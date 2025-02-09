@@ -145,37 +145,27 @@ class ProductController extends Controller
 
     public function generateNoproduct(Request $request)
     {
-        // Cari kategori dan varian berdasarkan ID yang dikirim dari request
-        $category = Category::find($request->category_id);
-        $variant = Variant::find($request->variant_id);
-
-        // Jika kategori atau varian tidak ditemukan, lempar error
+        $categoryId = $request->category_id;
+        $variantId = $request->variant_id;
+        $category = Category::find($categoryId);
+        $variant = Variant::find($variantId);
         if (!$category || !$variant) {
-            throw new \Exception('Category or Variant not found');
+            return response()->json(['error' => 'Category or Variant not found'], 400);
         }
-
-        // Ambil produk terakhir berdasarkan kategori & varian
-        $lastProduct = Product::where('category_id', $request->category_id)
-                              ->where('variant_id', $request->variant_id)
-                              ->orderBy('code', 'desc')
-                              ->first();
-
+        $lastProduct = Product::where('category_id', $categoryId)
+            ->where('variant_id', $variantId)
+            ->orderBy('id', 'desc')
+            ->first();
+        // dd( $lastProduct);
         if ($lastProduct) {
-            // Ambil 4 digit terakhir dari kode produk sebelumnya
-            preg_match('/(\d{4})$/', $lastProduct->code, $matches);
-            $lastCode = isset($matches[1]) ? (int) $matches[1] : 0;
-            $nextNumber = str_pad($lastCode + 1, 4, '0', STR_PAD_LEFT);
+            $lastCode = (int) ltrim(substr($lastProduct->code, -4), '0'); // Ambil angka terakhir tanpa menghapus nol
+            $nextNumber = str_pad($lastCode + 1, 4, '0', STR_PAD_LEFT); // Tambahkan angka dan tetap 4 digit
         } else {
-            // Jika belum ada produk dengan kategori & varian tersebut, mulai dari 0001
             $nextNumber = '0001';
         }
-
-        // Format kode produk sesuai aturan: [KODE_KATEGORI]-[KODE_VARIAN]-[ID_UNIK_4_ANGKA]
         $uniqueCode = strtoupper($category->code . '-' . $variant->code . '-' . $nextNumber);
-
-        return $uniqueCode; // ✅ Return string langsung
+        return response()->json(['unique_code' => $uniqueCode]);
     }
-
 
 
     public function getVariants(Request $request)
