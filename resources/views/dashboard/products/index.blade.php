@@ -19,8 +19,8 @@
                 </div>
                 <form method="get" action="/barang" class="form">
                     <div class="border p-1 px-2 rounded flex items-center gap-2">
-                        <input id="from_date" name="from_date" class="focus:outline-none text-sm w-32" type="text" placeholder="From Date">
-                        <input id="to_date" name="to_date" class="focus:outline-none text-sm w-32" type="text" placeholder="To Date">
+                        <input id="from_date" name="from_date" type="date" class="focus:outline-none text-sm w-20">
+                        <input id="to_date" name="to_date" type="date" class="focus:outline-none text-sm w-20">
                         <input id="search" name="search" class="focus:outline-none text-sm w-40" type="text" placeholder="Search Product">
                         <button type="submit" class="text-sm bg-gray-700 p-2 rounded text-white">Search</button>
                     </div>
@@ -55,7 +55,10 @@
                         <td class="p-2">{{$product->stock}}</td>
                         <td class="p-2">{{ $product->category->name ?? '-' }}</td>
                         <td class="p-2">{{ $product->variant->name ?? '-' }}</td>
-                        <td class="p-2 w-[150px]"><img src="{{asset('storage/'.$product->image)}}"/></td>
+                        <td class="p-2 w-[150px]">
+                            <img src="{{ $product->image ? asset('storage/'.$product->image) : asset('images/default-product.png') }}" class="w-full h-auto rounded">
+                        </td>
+
                         <td class="p-2">
                             @if ($product->created_user_name)
                                 {{ $product->created_user_name }} ({{ \Carbon\Carbon::parse($product->created_at)->format('d M Y') }})
@@ -89,4 +92,41 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let toast = document.getElementById("toast-container");
+            if (toast) {
+                toast.classList.remove("hidden");
+                setTimeout(() => {
+                    toast.classList.add("hidden");
+                }, 3000);
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".btn-delete-product").forEach(button => {
+                button.addEventListener("click", function () {
+                    let productId = this.getAttribute("data-id");
+                    if (confirm("Are you sure you want to delete this product?")) {
+                        fetch(`/delete-product/${productId}`, {
+                            method: "DELETE",
+                            headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.message) {
+                                alert("Product deleted successfully!");
+                                location.reload();
+                            } else {
+                                alert("Failed to delete product!");
+                            }
+                        })
+                        .catch(error => console.error(error));
+                    }
+                });
+            });
+        });
+    </script>
+
 @endsection

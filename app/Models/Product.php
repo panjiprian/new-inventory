@@ -27,6 +27,12 @@ class Product extends Model
         'updated_by'
     ];
 
+    // Casting tipe data
+    protected $casts = [
+        'stock' => 'integer',
+        'price' => 'decimal:2',
+    ];
+
     /**
      * Relasi ke kategori (satu produk memiliki satu kategori)
      */
@@ -43,19 +49,14 @@ class Product extends Model
         return $this->belongsTo(Variant::class);
     }
 
-    /**
-     * Relasi ke user yang membuat produk
-     */
-    public function creator(): BelongsTo
+    public function createdBy()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_user_id');
     }
 
-    /**
-     * Relasi ke user yang mengupdate produk terakhir kali
-     */
-    public function updater(): BelongsTo
+    public function updatedBy()
     {
-        return $this->belongsTo(User::class, 'updated_by');
+        return $this->belongsTo(User::class, 'updated_user_id');
     }
+
 }

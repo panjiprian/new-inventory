@@ -3,138 +3,130 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ProductExport;
 use Illuminate\Http\Request;
 use App\Models\Product;
-use App\Models\Supplier;
 use App\Models\Category;
 use App\Models\Variant;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DB::table('products')
-            ->join('users as created_user', 'products.created_by', '=', 'created_user.id')
-            ->leftJoin('users as updated_user', 'products.updated_by', '=', 'updated_user.id')
-            ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
-            ->leftJoin('variants', 'products.variant_id', '=', 'variants.id')
-            ->select(
-                'products.*',
-                'created_user.name as created_user_name',
-                'updated_user.name as updated_user_name',
-                'categories.name as category_name',
-                'variants.name as variant_name'
-            );
+        $query = Product::with(['category', 'variant', 'createdBy', 'updatedBy']);
 
         if ($request->has('search')) {
             $search = $request->input('search');
-            $query->where('products.name', 'LIKE', "%{$search}%");
+            $query->where('name', 'LIKE', "%{$search}%");
         }
 
         if ($request->has('from_date') && $request->has('to_date')) {
             $from = Carbon::parse($request->input('from_date'))->startOfDay();
             $to = Carbon::parse($request->input('to_date'))->endOfDay();
-            $query->whereBetween('products.created_at', [$from, $to]);
+            $query->whereBetween('created_at', [$from, $to]);
         }
 
-        $perPage = $request->input('per_page', 10); // Default 10 data per halaman
+        $perPage = $request->input('per_page', 10);
         $products = $query->paginate($perPage);
 
-        return view('dashboard.products.index', ['products' => $products]);
-    }
-
-    public function delete($id)
-    {
-        $product = Product::findOrFail($id);
-        Storage::delete($product->image);
-        $deletedProduct = $product->delete();
-
-        if ($deletedProduct) {
-            session()->flash('message', 'Data Successfully Deleted');
-            return response()->json(['message' => 'Data Successfully Deleted'], 200);
-        }
+        return view('dashboard.products.index', compact('products'));
     }
 
     public function create()
     {
-        $categories = Category::all();
-        $variants = Variant::all();
-        return view('dashboard.products.input', ['categories' => $categories, 'variants' => $variants]);
+        $categories = Category::orderBy('name')->get();
+        $variants = Variant::orderBy('name')->get();
+        return view('dashboard.products.input', compact('categories', 'variants'));
     }
 
     public function store(Request $request)
     {
-        $validated = $this->validate($request,[
-            'name' => ['required'],
-            'price' => ['required'],
-            'image' => ['required', 'image', 'max:1024'],
-            'category_id' => ['required'],
-            'variant_id' => ['required'],
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'price' => ['required', 'numeric'],
+            'image' => ['nullable', 'image', 'max:1024'],
+            'category_id' => ['required', 'exists:categories,id'],
+            'variant_id' => ['required', 'exists:variants,id'],
+            'code' => ['unique:products,code'], // Mencegah kode duplikat
         ]);
 
-        $imagePath = $request->file('image')->store('products');
+        $imagePath = $request->file('image') ? $request->file('image')->store('products') : null;
+        $productCode = $this->generateNoproduct($request);
 
-        $uniqueId = str_pad(Product::max('id') + 1, 4, '0', STR_PAD_LEFT);
-        $productCode = strtoupper($request->category_id . '-' . $request->variant_id . '-' . $uniqueId);
-
-        $created = Product::create([
+        Product::create([
             'name' => $request->name,
+            'description' => $request->description,
             'price' => $request->price,
             'image' => $imagePath,
             'category_id' => $request->category_id,
             'variant_id' => $request->variant_id,
-            'product_code' => $productCode,
-            'created_by' => Auth::user()->id,
+            'code' => $productCode,
+            'created_by' => Auth::id(),
         ]);
 
-        if ($created) {
-            return redirect('/barang')->with('message', 'Data Successfully Added');
-        }
+        return redirect('/barang')->with('message', 'Data Successfully Added');
     }
 
     public function edit($id)
     {
         $product = Product::findOrFail($id);
-        $categories = Category::all();
-        $variants = Variant::all();
-        return view('dashboard.products.update', ['product' => $product, 'categories' => $categories, 'variants' => $variants]);
+        $categories = Category::orderBy('name')->get();
+        $variants = Variant::orderBy('name')->get();
+        return view('dashboard.products.update', compact('product', 'categories', 'variants'));
     }
 
     public function update(Request $request, $id)
     {
-        $validated = $this->validate($request,[
-            'name' => ['required'],
-            'price' => ['required'],
-            'category_id' => ['required'],
-            'variant_id' => ['required'],
-            'image' => ['image', 'max:1024'],
+        $product = Product::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'price' => ['required', 'numeric'],
+            'category_id' => ['required', 'exists:categories,id'],
+            'variant_id' => ['required', 'exists:variants,id'],
+            'image' => ['nullable', 'image', 'max:1024'],
+            'code' => ['unique:products,code,' . $id], // Pastikan kode tetap unik, kecuali untuk produk ini sendiri
         ]);
 
-        $productWithId = Product::findOrFail($id);
-        $imagePath = $productWithId->image;
+        $imagePath = $product->image;
 
         if ($request->hasFile('image')) {
-            Storage::delete($productWithId->image);
+            Storage::delete($product->image);
             $imagePath = $request->file('image')->store('products');
         }
 
-        $updated = $productWithId->update([
+        $product->update([
             'name' => $request->name,
+            'description' => $request->description,
             'price' => $request->price,
             'image' => $imagePath,
             'category_id' => $request->category_id,
             'variant_id' => $request->variant_id,
-            'updated_by' => Auth::user()->id,
+            'updated_by' => Auth::id(),
         ]);
 
-        if ($updated) {
-            return redirect('/barang')->with('message', 'Data Successfully Updated');
+        return redirect('/barang')->with('message', 'Data Successfully Updated');
+    }
+
+    public function delete($id)
+    {
+        $product = Product::findOrFail($id);
+
+        if ($product->image) {
+            Storage::delete($product->image);
+        }
+
+        if ($product->delete()) {
+            return response()->json(['message' => 'Data Successfully Deleted'], 200);
+        } else {
+            return response()->json(['error' => 'Failed to delete product'], 500);
         }
     }
 
@@ -151,30 +143,35 @@ class ProductController extends Controller
 
     public function generateNoproduct(Request $request)
     {
-        $categoryId = $request->category_id;
-        $variantId = $request->variant_id;
-        $category = Category::find($categoryId);
-        $variant = Variant::find($variantId);
+        $category = Category::find($request->category_id);
+        $variant = Variant::find($request->variant_id);
 
         if (!$category || !$variant) {
             return response()->json(['error' => 'Category or Variant not found'], 400);
         }
-        $lastProduct = Product::where('category_id', $categoryId)
-                            ->where('variant_id', $variantId)
-                            ->orderBy('id', 'desc')
-                            ->first();
 
-                            // dd( $lastProduct);
+        $lastProduct = Product::where('category_id', $request->category_id)
+                              ->where('variant_id', $request->variant_id)
+                              ->orderBy('code', 'desc')
+                              ->first();
 
-                            if ($lastProduct) {
-                                $lastCode = (int) ltrim(substr($lastProduct->code, -4), '0'); // Ambil angka terakhir tanpa menghapus nol
-                                $nextNumber = str_pad($lastCode + 1, 4, '0', STR_PAD_LEFT); // Tambahkan angka dan tetap 4 digit
-                            } else {
-                                $nextNumber = '0001';
-                            }
+        if ($lastProduct) {
+            preg_match('/(\d{4})$/', $lastProduct->code, $matches);
+            $lastCode = isset($matches[1]) ? (int) $matches[1] : 0;
+            $nextNumber = str_pad($lastCode + 1, 4, '0', STR_PAD_LEFT);
+        } else {
+            $nextNumber = '0001';
+        }
 
-                            $uniqueCode = strtoupper($category->code . '-' . $variant->code . '-' . $nextNumber);
+        $uniqueCode = strtoupper($category->code . '-' . $variant->code . '-' . $nextNumber);
 
-        return response()->json(['unique_code' => $uniqueCode]);
+        return response()->json(['unique_code' => $uniqueCode]); // ✅ Kembalikan JSON
+    }
+
+
+    public function getVariants(Request $request)
+    {
+        $variants = Variant::where('category_id', $request->category_id)->get();
+        return response()->json(['variants' => $variants]);
     }
 }

@@ -33,6 +33,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/ubah-barang/{id}', [ProductController::class, 'update']);
     Route::get('/products',[ProductController::class,'getAllProducts']);
     Route::get('/excel/products',[ProductController::class,'exportExcel']);
+    Route::post('/generate-noproduct', [ProductController::class, 'generateNoproduct'])->name('generate-noproduct');
+    Route::get('/get-variants', [ProductController::class, 'getVariants'])->name('get-variants');
+
 
     Route::get('/supplier', [SupplierController::class,'index']);
     Route::delete('/hapus-supplier/{id}', [SupplierController::class, 'delete']);

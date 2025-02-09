@@ -329,13 +329,13 @@ class ComposerStaticInit6d99cf6dbc2742962b3c662f98a6bebf
         ),
         'Spatie\\LaravelIgnition\\' => 
         array (
-            0 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/laravel-ignition',
-            1 => __DIR__ . '/..' . '/spatie/laravel-ignition/src',
+            0 => __DIR__ . '/..' . '/spatie/laravel-ignition/src',
+            1 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/laravel-ignition',
         ),
         'Spatie\\Ignition\\' => 
         array (
-            0 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/ignition',
-            1 => __DIR__ . '/..' . '/spatie/ignition/src',
+            0 => __DIR__ . '/..' . '/spatie/ignition/src',
+            1 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/ignition',
         ),
         'Spatie\\FlareClient\\' => 
         array (
@@ -371,8 +371,8 @@ class ComposerStaticInit6d99cf6dbc2742962b3c662f98a6bebf
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -589,6 +589,7 @@ class ComposerStaticInit6d99cf6dbc2742962b3c662f98a6bebf
         'App\\Exports\\CategoryExport' => __DIR__ . '/../..' . '/app/Exports/CategoryExport.php',
         'App\\Exports\\ProductExport' => __DIR__ . '/../..' . '/app/Exports/ProductExport.php',
         'App\\Exports\\SupplierExport' => __DIR__ . '/../..' . '/app/Exports/SupplierExport.php',
+        'App\\Exports\\VariantExport' => __DIR__ . '/../..' . '/app/Exports/VariantExport.php',
         'App\\Http\\Controllers\\Auth\\AuthController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/AuthController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\Dashboard\\CategoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/Dashboard/CategoryController.php',
@@ -597,6 +598,7 @@ class ComposerStaticInit6d99cf6dbc2742962b3c662f98a6bebf
         'App\\Http\\Controllers\\Dashboard\\ProductSuppliesController' => __DIR__ . '/../..' . '/app/Http/Controllers/Dashboard/ProductSuppliesController.php',
         'App\\Http\\Controllers\\Dashboard\\SupplierController' => __DIR__ . '/../..' . '/app/Http/Controllers/Dashboard/SupplierController.php',
         'App\\Http\\Controllers\\Dashboard\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/Dashboard/UserController.php',
+        'App\\Http\\Controllers\\Dashboard\\VariantController' => __DIR__ . '/../..' . '/app/Http/Controllers/Dashboard/VariantController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
@@ -613,11 +615,13 @@ class ComposerStaticInit6d99cf6dbc2742962b3c662f98a6bebf
         'App\\Models\\ProductSupplies' => __DIR__ . '/../..' . '/app/Models/ProductSupplies.php',
         'App\\Models\\Supplier' => __DIR__ . '/../..' . '/app/Models/Supplier.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
+        'App\\Models\\Variant' => __DIR__ . '/../..' . '/app/Models/Variant.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',
         'App\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/app/Providers/EventServiceProvider.php',
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
+        'App\\Traits\\WhatsappTrait' => __DIR__ . '/../..' . '/app/Traits/WhatsappTrait.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Brick\\Math\\BigDecimal' => __DIR__ . '/..' . '/brick/math/src/BigDecimal.php',
         'Brick\\Math\\BigInteger' => __DIR__ . '/..' . '/brick/math/src/BigInteger.php',
@@ -863,6 +867,7 @@ class ComposerStaticInit6d99cf6dbc2742962b3c662f98a6bebf
         'Database\\Seeders\\ProductSeeder' => __DIR__ . '/../..' . '/database/seeders/ProductSeeder.php',
         'Database\\Seeders\\SupplierSeeder' => __DIR__ . '/../..' . '/database/seeders/SupplierSeeder.php',
         'Database\\Seeders\\UserSeeder' => __DIR__ . '/../..' . '/database/seeders/UserSeeder.php',
+        'Database\\Seeders\\VariantSeeder' => __DIR__ . '/../..' . '/database/seeders/VariantSeeder.php',
         'DateError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateError.php',
         'DateException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateException.php',
         'DateInvalidOperationException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateInvalidOperationException.php',
@@ -6850,13 +6855,11 @@ class ComposerStaticInit6d99cf6dbc2742962b3c662f98a6bebf
         'Symfony\\Component\\CssSelector\\Node\\ElementNode' => __DIR__ . '/..' . '/symfony/css-selector/Node/ElementNode.php',
         'Symfony\\Component\\CssSelector\\Node\\FunctionNode' => __DIR__ . '/..' . '/symfony/css-selector/Node/FunctionNode.php',
         'Symfony\\Component\\CssSelector\\Node\\HashNode' => __DIR__ . '/..' . '/symfony/css-selector/Node/HashNode.php',
-        'Symfony\\Component\\CssSelector\\Node\\MatchingNode' => __DIR__ . '/..' . '/symfony/css-selector/Node/MatchingNode.php',
         'Symfony\\Component\\CssSelector\\Node\\NegationNode' => __DIR__ . '/..' . '/symfony/css-selector/Node/NegationNode.php',
         'Symfony\\Component\\CssSelector\\Node\\NodeInterface' => __DIR__ . '/..' . '/symfony/css-selector/Node/NodeInterface.php',
         'Symfony\\Component\\CssSelector\\Node\\PseudoNode' => __DIR__ . '/..' . '/symfony/css-selector/Node/PseudoNode.php',
         'Symfony\\Component\\CssSelector\\Node\\SelectorNode' => __DIR__ . '/..' . '/symfony/css-selector/Node/SelectorNode.php',
         'Symfony\\Component\\CssSelector\\Node\\Specificity' => __DIR__ . '/..' . '/symfony/css-selector/Node/Specificity.php',
-        'Symfony\\Component\\CssSelector\\Node\\SpecificityAdjustmentNode' => __DIR__ . '/..' . '/symfony/css-selector/Node/SpecificityAdjustmentNode.php',
         'Symfony\\Component\\CssSelector\\Parser\\Handler\\CommentHandler' => __DIR__ . '/..' . '/symfony/css-selector/Parser/Handler/CommentHandler.php',
         'Symfony\\Component\\CssSelector\\Parser\\Handler\\HandlerInterface' => __DIR__ . '/..' . '/symfony/css-selector/Parser/Handler/HandlerInterface.php',
         'Symfony\\Component\\CssSelector\\Parser\\Handler\\HashHandler' => __DIR__ . '/..' . '/symfony/css-selector/Parser/Handler/HashHandler.php',
@@ -7445,11 +7448,9 @@ class ComposerStaticInit6d99cf6dbc2742962b3c662f98a6bebf
         'Symfony\\Component\\String\\Inflector\\EnglishInflector' => __DIR__ . '/..' . '/symfony/string/Inflector/EnglishInflector.php',
         'Symfony\\Component\\String\\Inflector\\FrenchInflector' => __DIR__ . '/..' . '/symfony/string/Inflector/FrenchInflector.php',
         'Symfony\\Component\\String\\Inflector\\InflectorInterface' => __DIR__ . '/..' . '/symfony/string/Inflector/InflectorInterface.php',
-        'Symfony\\Component\\String\\Inflector\\SpanishInflector' => __DIR__ . '/..' . '/symfony/string/Inflector/SpanishInflector.php',
         'Symfony\\Component\\String\\LazyString' => __DIR__ . '/..' . '/symfony/string/LazyString.php',
         'Symfony\\Component\\String\\Slugger\\AsciiSlugger' => __DIR__ . '/..' . '/symfony/string/Slugger/AsciiSlugger.php',
         'Symfony\\Component\\String\\Slugger\\SluggerInterface' => __DIR__ . '/..' . '/symfony/string/Slugger/SluggerInterface.php',
-        'Symfony\\Component\\String\\TruncateMode' => __DIR__ . '/..' . '/symfony/string/TruncateMode.php',
         'Symfony\\Component\\String\\UnicodeString' => __DIR__ . '/..' . '/symfony/string/UnicodeString.php',
         'Symfony\\Component\\Translation\\CatalogueMetadataAwareInterface' => __DIR__ . '/..' . '/symfony/translation/CatalogueMetadataAwareInterface.php',
         'Symfony\\Component\\Translation\\Catalogue\\AbstractOperation' => __DIR__ . '/..' . '/symfony/translation/Catalogue/AbstractOperation.php',

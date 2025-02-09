@@ -11,6 +11,15 @@
             @csrf
             @method('PUT')
             <div class="mt-3">
+                <label class="text-sm text-gray-600" for="unique_code">Unique Code</label>
+                <div class="border-2 p-1 bg-gray-200 @error('unique_code') border-red-400 @enderror">
+                    <input name="unique_code" value="{{$product->unique_code}}" class="text-black w-full h-full focus:outline-none text-sm bg-gray-200" id="unique_code" type="text" readonly>
+                </div>
+                @error('unique_code')
+                    <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
+                @enderror
+            </div>
+            <div class="mt-3">
                 <label class="text-sm text-gray-600" for="name">Product Name</label>
                 <div class="border-2 p-1 @error('name') border-red-400 @enderror">
                     <input name="name" value="{{$product->name}}" class="text-black w-full h-full focus:outline-none text-sm" id="name" type="text">
@@ -55,18 +64,20 @@
                     <div class="border">
                         <select name="variant_id" class="w-full text-black p-2 text-sm bg-transparent focus:outline-none" id="variant">
                             @foreach($variants as $variant)
-                                <option class="text-sm" value="{{$variant->id}}" {{$product->variant_id == $variant->id ? 'selected' : ''}}>{{$variant->name}}</option>
+                                @if($variant->category_id == $product->category_id)
+                                    <option class="text-sm" value="{{$variant->id}}" {{$product->variant_id == $variant->id ? 'selected' : ''}}>{{$variant->name}}</option>
+                                @endif
                             @endforeach
                         </select>
                     </div>
                 </div>
             </div>
             <div class="mt-3">
-                <label class="text-sm text-gray-600" for="unique_code">Unique Code</label>
-                <div class="border-2 p-1 @error('unique_code') border-red-400 @enderror">
-                    <input name="unique_code" value="{{$product->unique_code}}" class="text-black w-full h-full focus:outline-none text-sm" id="unique_code" type="text" readonly>
+                <label class="text-sm text-gray-600" for="description">Description</label>
+                <div class="border-2 p-1 @error('description') border-red-400 @enderror">
+                    <textarea name="description" class="text-black w-full h-full focus:outline-none text-sm" id="description">{{$product->description}}</textarea>
                 </div>
-                @error('unique_code')
+                @error('description')
                     <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
                 @enderror
             </div>
@@ -76,20 +87,23 @@
         </form>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    document.getElementById('category').addEventListener('change', generateUniqueCode);
-    document.getElementById('variant').addEventListener('change', generateUniqueCode);
+    document.getElementById('category').addEventListener('change', function() {
+        let categoryId = this.value;
+        let variantSelect = document.getElementById('variant');
 
-    function generateUniqueCode() {
-        let category = document.getElementById('category').value;
-        let variant = document.getElementById('variant').value;
-        if (category && variant) {
-            fetch(`/generate-code?category_id=${category}&variant_id=${variant}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('unique_code').value = data.code;
+        fetch(`/get-variants?category_id=${categoryId}`)
+            .then(response => response.json())
+            .then(data => {
+                variantSelect.innerHTML = "";
+                data.variants.forEach(variant => {
+                    let option = document.createElement("option");
+                    option.value = variant.id;
+                    option.textContent = variant.name;
+                    variantSelect.appendChild(option);
                 });
-        }
-    }
+            });
+    });
 </script>
 @endsection
