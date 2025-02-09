@@ -27,7 +27,9 @@ class CategoryController extends Controller
                   ->orWhere('categories.code', 'LIKE', "%{$request->search}%");
         }
 
-        $categories = $query->paginate(10);
+        $perPage = $request->input('per_page', 10); // Default 10 data per halaman
+        $categories = $query->paginate($perPage);
+
         return view('dashboard.category.index', compact('categories'));
     }
 

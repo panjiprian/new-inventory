@@ -30,7 +30,8 @@ class VariantController extends Controller
                   ->orWhere('variants.code', 'LIKE', "%{$request->search}%");
         }
 
-        $variants = $query->paginate(10);
+        $perPage = $request->input('per_page', 10); // Default 10 data per halaman
+        $variants = $query->paginate($perPage);
 
         return view('dashboard.variant.index', compact('variants'));
     }

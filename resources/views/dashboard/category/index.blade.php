@@ -17,14 +17,28 @@
                     @endif
                     <a  class="text-sm bg-gray-700 text-white inline-block mt-2 px-2 py-1" href="/excel/categories">Export Excel</a>
                 </div>
-                <form method="get" action="/categories" class="form">
+                <div class="flex gap-4">
+                    <!-- Dropdown Filter Jumlah Data -->
+                    <form method="GET" action="/categories" class="flex items-center gap-2">
+                        <label for="per_page" class="text-sm text-gray-600">Show</label>
+                        <select id="per_page" name="per_page" class="border p-1 text-sm rounded" onchange="this.form.submit()">
+                            <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                            <option value="20" {{ request('per_page') == 20 ? 'selected' : '' }}>20</option>
+                            <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                            <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                        </select>
+                        <span class="text-sm text-gray-600">entries</span>
+                    </form>
+                    <!-- Form Pencarian -->
+                    <form method="GET" action="/categories" class="flex items-center gap-2">
                     <div class="flex">
-                        <div class="border p-1 px-2 rounded-l">
-                          <input id="search" name="search" class="focus:outline-none text-sm" type="text" placeholder="Search Category">
-                        </div>
-                        <button type="submit" class="text-sm bg-gray-700 p-2 rounded-r text-white h-full">Search</button>
+                    <div class="border p-1 px-2 rounded-l">
+                    <input id="search" name="search" class="focus:outline-none text-sm" type="text" placeholder="Search Variant" value="{{ request('search') }}">
                     </div>
-                </form>
+                    <button type="submit" class="text-sm bg-gray-700 p-2 rounded-r text-white h-full">Search</button>
+                    </div>
+                    </form>
+                </div>
             </div>
 
             <table class="w-full mt-5 text-sm text-gray-600">
@@ -59,9 +73,10 @@
                     @endforeach
                 </tbody>
             </table>
-            <div class="mt-5">
-                {{$categories->links('pagination::tailwind')}}
-            </div>
+        <!-- Paginasi dengan Query Per Page -->
+        <div class="mt-5">
+            {{ $categories->appends(['per_page' => request('per_page'), 'search' => request('search')])->links('pagination::tailwind') }}
         </div>
+    </div>
     </div>
 @endsection

@@ -43,7 +43,8 @@ class ProductController extends Controller
             $query->whereBetween('products.created_at', [$from, $to]);
         }
 
-        $products = $query->paginate(10);
+        $perPage = $request->input('per_page', 10); // Default 10 data per halaman
+        $products = $query->paginate($perPage);
 
         return view('dashboard.products.index', ['products' => $products]);
     }
