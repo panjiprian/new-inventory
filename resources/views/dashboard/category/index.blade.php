@@ -64,6 +64,9 @@
                         <td class="p-2">{{$category->products->count()}}</td>
                         @if(Auth::user()->role === 'admin')
                         <td class="p-2 flex gap-2">
+                            <button data-id="{{$category->id}}" class="btn-delete-category bg-red-500 py-1 px-4 rounded text-white">
+                                <i class="ri-delete-bin-line"></i>
+                            </button>
                             <a href="/ubah-kategori/{{$category->id}}" class="bg-yellow-400 py-1 px-4 rounded text-white">
                                 <i class="ri-edit-box-line"></i>
                             </a>

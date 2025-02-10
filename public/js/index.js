@@ -1,5 +1,4 @@
 const csrf = document.head.querySelector("meta[name=csrf-token]").content;
-
 const toast = () => {
     setTimeout(() => {
         const toastContainer = document.querySelector("#toast-container");
@@ -14,7 +13,6 @@ const toast = () => {
         }
     }, 100);
 };
-
 const deleteModal = (btnDelete, endpoint, message) => {
     btnDelete.addEventListener("click", () => {
         Swal.fire({
@@ -22,25 +20,52 @@ const deleteModal = (btnDelete, endpoint, message) => {
             text: message,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Sure",
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
             cancelButtonText: "Cancel",
         }).then((result) => {
             if (result.isConfirmed) {
+                // Menampilkan loading saat proses hapus berjalan
+                Swal.fire({
+                    title: "Deleting...",
+                    text: "Please wait a moment",
+                    icon: "info",
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
                 fetch(`${endpoint}/${btnDelete.dataset.id}`, {
                     method: "DELETE",
                     headers: {
                         "X-CSRF-TOKEN": csrf,
                     },
                 })
-                    .then((response) => {
-                        return response.json();
-                    })
+                    .then((response) => response.json())
                     .then((result) => {
                         if (result.message) {
-                            location.reload();
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: "Your data has been deleted successfully.",
+                                icon: "success",
+                                timer: 5000,
+                                showConfirmButton: false
+                            });
+
+                            // Reload halaman setelah delay agar smooth
+                            setTimeout(() => {
+                                location.reload();
+                            }, 2000);
+                        } else {
+                            Swal.fire("Error", "Failed to delete data!", "error");
                         }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        Swal.fire("Error", "Something went wrong!", "error");
                     });
             }
         });
@@ -49,7 +74,7 @@ const deleteModal = (btnDelete, endpoint, message) => {
 
 window.onload = toast();
 
-// delete data with ajax
+// Delete action for various elements
 document.querySelectorAll(".btn-delete-category").forEach((btnDelete) => {
     deleteModal(
         btnDelete,
@@ -104,4 +129,70 @@ document.querySelectorAll(".btn-delete-product-outcome").forEach((btnDelete) => 
         "/hapus-barang-keluar",
         "Deleting outgoing goods data will also affect the amount of related goods data"
     );
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const btnSave = document.getElementById("btn-save");
+
+    if (btnSave) {
+        btnSave.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: "Saving...",
+                text: "Please wait while the data is being saved.",
+                icon: "info",
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            const form = btnSave.closest("form");
+            const formData = new FormData(form);
+            const actionUrl = form.getAttribute("action");
+
+            fetch(actionUrl, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector("meta[name='csrf-token']").content
+                }
+            })
+            .then(response => {
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return response.json();
+                } else {
+                    return response.text().then(html => { throw new Error("Server returned HTML instead of JSON"); });
+                }
+            })
+            .then(result => {
+                if (result.success) {
+                    Swal.fire({
+                        title: "Success!",
+                        text: result.message || "Data has been saved successfully.",
+                        icon: "success",
+                        timer: 5000,
+                        showConfirmButton: false
+                    });
+
+                    setTimeout(() => {
+                        window.location.href = result.redirect || "/kategori";
+                    }, 5000);
+                } else {
+                    throw new Error(result.message || "Failed to save data.");
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                Swal.fire({
+                    title: "Error!",
+                    text: "Failed to save data. Please check your input.",
+                    icon: "error",
+                });
+            });
+        });
+    }
 });

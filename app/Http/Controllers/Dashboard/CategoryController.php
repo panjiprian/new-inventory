@@ -43,7 +43,7 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $request->validate([
             'code' => ['required', 'unique:categories,code', 'max:10'],
             'name' => ['required', 'unique:categories,name']
         ]);
@@ -55,9 +55,20 @@ class CategoryController extends Controller
         ]);
 
         if ($created) {
-            return redirect('/kategori')->with('message', 'Category Successfully Added');
+            return response()->json([
+                'success' => true,
+                'message' => 'Category Successfully Added',
+                'redirect' => url('/kategori') // Redirect URL setelah sukses
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to add category'
+            ], 500);
         }
     }
+
+
 
     public function delete($id)
     {

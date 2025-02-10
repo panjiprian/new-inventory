@@ -25,10 +25,14 @@ class VariantController extends Controller
                 'updaters.name as updater_name'
             );
 
-        if ($request->has('search')) {
-            $query->where('variants.name', 'LIKE', "%{$request->search}%")
-                  ->orWhere('variants.code', 'LIKE', "%{$request->search}%");
-        }
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $query->where(function ($q) use ($search) {
+                    $q->where('variants.name', 'LIKE', "%{$search}%")
+                      ->orWhere('variants.code', 'LIKE', "%{$search}%");
+                });
+            }
+
 
         $perPage = $request->input('per_page', 10); // Default 10 data per halaman
         $variants = $query->paginate($perPage);
@@ -59,7 +63,16 @@ class VariantController extends Controller
         ]);
 
         if ($created) {
-            return redirect('/varian')->with('message', 'Data Successfully Added');
+            return response()->json([
+                'success' => true,
+                'message' => 'Variant Successfully Added',
+                'redirect' => url('/variant') // Redirect URL setelah sukses
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to add variant'
+            ], 500);
         }
     }
 
@@ -71,9 +84,11 @@ class VariantController extends Controller
         $deleted = $variant->delete();
 
         if ($deleted) {
-            session()->flash('message', 'Data Successfully Deleted');
             return response()->json(['message' => 'Data Successfully Deleted'], 200);
+        } else {
+            return response()->json(['message' => 'Failed to delete variant'], 500);
         }
+
     }
 
     public function edit($id)

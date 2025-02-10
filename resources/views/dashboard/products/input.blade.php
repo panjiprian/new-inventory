@@ -12,58 +12,49 @@
 
                 <div class="mt-3">
                     <label class="text-sm text-gray-600" for="unique_code">Unique Code</label>
-                    <div class="border-2 p-1 @error('unique_code') border-red-400 @enderror">
+                    <div class="border-2 p-1">
                         <input name="unique_code" id="unique_code" value=""
-                            class="text-black w-full h-full focus:outline-none text-sm" type="text" disabled>
+                            class="text-black w-full h-full focus:outline-none text-sm" type="text" readonly
+                            title="Generated automatically">
                     </div>
-                    @error('unique_code')
-                        <p class="italic text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
                 </div>
 
                 <div class="mt-3">
                     <label class="text-sm text-gray-600" for="name">Product Name</label>
-                    <div class="border-2 p-1 @error('name') border-red-400 @enderror">
+                    <div class="border-2 p-1">
                         <input name="name" value="{{ old('name') }}"
-                            class="text-black w-full h-full focus:outline-none text-sm" id="name" type="text">
+                            class="text-black w-full h-full focus:outline-none text-sm" id="name" type="text"
+                            placeholder="Enter product name">
                     </div>
-                    @error('name')
-                        <p class="italic text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
+                    <small id="name-count" class="text-gray-500">0 characters</small>
                 </div>
 
                 <div class="mt-3">
                     <label class="text-sm text-gray-600" for="price">Price</label>
-                    <div class="border-2 p-1 @error('price') border-red-400 @enderror">
+                    <div class="border-2 p-1">
                         <input value="{{ old('price') }}" name="price"
-                            class="text-black text-sm w-full h-full focus:outline-none" id="price" type="number">
+                            class="text-black text-sm w-full h-full focus:outline-none" id="price" type="number"
+                            placeholder="Enter price (Rp)">
                     </div>
-                    @error('price')
-                        <p class="italic text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
+                    <small id="price-preview" class="text-gray-500">Rp 0</small>
                 </div>
 
                 <div class="mt-3">
                     <label class="text-sm text-gray-600" for="image">Photo</label>
-                    <div class="border-2 p-1 @error('image') border-red-400 @enderror">
-                        <input type="file" name="image" class="text-sm w-full h-full focus:outline-none"
-                            id="image">
+                    <div class="border-2 p-1">
+                        <input type="file" name="image" class="text-sm w-full h-full focus:outline-none" id="image">
+                        <img id="image-preview" class="mt-2 rounded" style="max-width: 150px; display: none;">
                     </div>
-                    @error('image')
-                        <p class="italic text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
                 </div>
 
                 <div class="flex gap-1 mt-3">
                     <div class="w-full">
                         <label class="text-sm text-gray-600" for="category">Category</label>
                         <div class="border">
-                            <select name="category_id"
-                                class="w-full text-black p-2 text-sm bg-transparent focus:outline-none" id="category">
+                            <select name="category_id" class="w-full text-black p-2 text-sm bg-transparent focus:outline-none" id="category">
                                 <option value="" selected disabled>Select Category</option>
                                 @foreach ($categories as $category)
-                                    <option class="text-sm" value="{{ $category->id }}"
-                                        {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                    <option class="text-sm" value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                         {{ $category->name }}
                                     </option>
                                 @endforeach
@@ -76,8 +67,7 @@
                     <div class="w-full">
                         <label class="text-sm text-gray-600" for="variant">Variant</label>
                         <div class="border">
-                            <select name="variant_id"
-                                class="w-full text-black p-2 text-sm bg-transparent focus:outline-none" id="variant">
+                            <select name="variant_id" class="w-full text-black p-2 text-sm bg-transparent focus:outline-none" id="variant">
                                 <option value="" selected disabled>Select Variant</option>
                             </select>
                         </div>
@@ -86,13 +76,11 @@
 
                 <div class="mt-3">
                     <label class="text-sm text-gray-600" for="description">Description</label>
-                    <div class="border-2 p-1 @error('description') border-red-400 @enderror">
+                    <div class="border-2 p-1">
                         <textarea name="description" id="description" class="text-black w-full h-full focus:outline-none text-sm"
                             rows="4">{{ old('description') }}</textarea>
                     </div>
-                    @error('description')
-                        <p class="italic text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
+                    <small id="description-count" class="text-gray-500">0 characters</small>
                 </div>
 
                 <div class="mt-3">
@@ -102,69 +90,89 @@
         </div>
 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
         <script>
             $(document).ready(function() {
-                // Ketika category berubah, update variant
+                // Update variants on category change
                 $('#category').on('change', function() {
                     let categoryId = $(this).val();
-                    $('#variant').html('<option value="" disabled selected>Loading...</option>'); // Placeholder
+                    let variantSelect = $('#variant');
+                    variantSelect.empty().append('<option value="" disabled selected>Loading...</option>');
 
                     if (categoryId) {
                         $.ajax({
                             url: "{{ route('get-variants') }}",
                             type: "GET",
-                            data: {
-                                category_id: categoryId
-                            },
+                            data: { category_id: categoryId },
                             success: function(response) {
-                                $('#variant').html(
-                                    '<option value="" disabled selected>Select Variant</option>'
-                                    ); // Reset variant
+                                variantSelect.empty().append('<option value="" disabled selected>Select Variant</option>');
                                 $.each(response.variants, function(key, variant) {
-                                    $('#variant').append(
-                                        `<option value="${variant.id}">${variant.name}</option>`
-                                        );
+                                    variantSelect.append(`<option value="${variant.id}">${variant.name}</option>`);
                                 });
                             },
-                            error: function(xhr) {
-                                console.log(xhr.responseText);
+                            error: function() {
+                                Swal.fire({
+                                    title: "Error!",
+                                    text: "Failed to fetch variants. Please try again.",
+                                    icon: "error",
+                                    confirmButtonText: "OK"
+                                });
                             }
                         });
                     }
                 });
 
-                // Ketika variant dipilih, generate unique code
-                $(document).ready(function() {
-                    $('#category, #variant').change(function() {
+                // Generate unique code on category & variant change
+                $('#category, #variant').change(function () {
+                    let category_id = $('#category').val();
+                    let variant_id = $('#variant').val();
+                    let uniqueCodeInput = $('#unique_code');
 
-                        var category_id = $('#category').val();
-                        var variant_id = $('#variant').val();
-                        if (category_id && variant_id) {
-                            $.ajax({
-                                url: "{{ route('generate-noproduct') }}",
-                                type: "POST",
-                                data: {
-                                    category_id: category_id,
-                                    variant_id: variant_id,
-                                    _token: "{{ csrf_token() }}"
-                                },
-                                success: function(response) {
-                                    console.log(response);
-
-                                    if (response.unique_code) {
-                                        $('#unique_code').val(response
-                                        .unique_code); // ✅ ID sudah sesuai dengan form
-                                    }
-                                },
-                                error: function(xhr) {
-                                    console.log(xhr.responseText);
+                    if (category_id && variant_id) {
+                        uniqueCodeInput.val('Generating...').addClass('text-gray-400');
+                        $.ajax({
+                            url: "{{ route('generate-noproduct') }}",
+                            type: "POST",
+                            data: {
+                                category_id: category_id,
+                                variant_id: variant_id,
+                                _token: "{{ csrf_token() }}"
+                            },
+                            success: function (response) {
+                                if (response.unique_code) {
+                                    uniqueCodeInput.hide().val(response.unique_code).fadeIn(500).removeClass('text-gray-400');
                                 }
-                            });
-                        }
-                    });
+                            },
+                            error: function () {
+                                uniqueCodeInput.val('Error Generating Code').addClass('text-red-500');
+                            }
+                        });
+                    }
                 });
 
+                // Format price input
+                $('#price').on('input', function () {
+                    let value = $(this).val();
+                    if (value < 0) { $(this).val(0); }
+                    $('#price-preview').text(new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(value));
+                });
+
+                // Image preview
+                $('#image').change(function () {
+                    let reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#image-preview').attr('src', e.target.result).fadeIn();
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                });
+
+                // Live character count
+                function updateCharCount(input, counter) {
+                    $(input).on('input', function () {
+                        $(counter).text($(this).val().length + " characters");
+                    });
+                }
+                updateCharCount('#name', '#name-count');
+                updateCharCount('#description', '#description-count');
             });
         </script>
     </div>

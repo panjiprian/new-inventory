@@ -28,9 +28,10 @@
                 @enderror
             </div>
             <div class="mt-3">
-                <button class="bg-gray-600 text-white w-full p-2 rounded text-sm">Save Category</button>
+                <button id="btn-save" class="bg-gray-600 text-white w-full p-2 rounded text-sm">Save Category</button>
             </div>
         </form>
     </div>
 </div>
+<script src="{{ asset('js/index.js') }}"></script>
 @endsection
