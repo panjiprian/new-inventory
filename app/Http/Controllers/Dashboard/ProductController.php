@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ProductExport;
@@ -12,12 +14,14 @@ use App\Models\Category;
 use App\Models\Variant;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Traits\WhatsappTrait;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 
 
 class ProductController extends Controller
 {
+    use WhatsappTrait;
     public function index(Request $request)
     {
         $query = Product::with(['category', 'variant', 'createdBy', 'updatedBy']);
@@ -48,6 +52,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        // Validasi request
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
@@ -55,24 +60,63 @@ class ProductController extends Controller
             'image' => ['nullable', 'image', 'max:1024'],
             'category_id' => ['required', 'exists:categories,id'],
             'variant_id' => ['required', 'exists:variants,id'],
-            'code' => ['unique:products,code'], // Mencegah kode duplikat
+            'unique_code' => ['required', 'unique:products,code'],
         ]);
 
+        // Menyimpan file gambar jika ada
         $imagePath = $request->file('image') ? $request->file('image')->store('products') : null;
-        $productCode = $this->generateNoproduct($request);
 
-        Product::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'price' => $request->price,
-            'image' => $imagePath,
-            'category_id' => $request->category_id,
-            'variant_id' => $request->variant_id,
-            'code' => $productCode,
-            'created_by' => Auth::id(),
-        ]);
+        // Ambil semua admin
+        $admins = User::where('role', 'admin')->whereNotNull('phone')->get();
 
-        return redirect('/barang')->with('message', 'Data Successfully Added');
+        // Pesan yang ingin dikirim
+        $message = 'Produk baru telah ditambahkan: ' . $request->name . ' dengan harga ' . $request->price;
+
+        // Mulai transaksi untuk memastikan konsistensi data
+        DB::beginTransaction();
+
+        try {
+            // Kirim pesan ke setiap admin
+            foreach ($admins as $admin) {
+                $phone = str_replace('+', '', $admin->phone);
+                $isSent = $this->kirimPesanWhatsapp($phone, $message);
+
+                // Jika pengiriman pesan ke salah satu admin gagal, batalkan proses
+                if (!$isSent) {
+                    throw new \Exception("Pesan WhatsApp gagal dikirim ke admin: " . $admin->name);
+                }
+            }
+
+            // Jika semua pesan berhasil, simpan produk
+            $product = Product::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'price' => $request->price,
+                'image' => $imagePath,
+                'category_id' => $request->category_id,
+                'variant_id' => $request->variant_id,
+                'code' => $request->unique_code,
+                'created_by' => Auth::id(),
+            ]);
+
+            // Commit transaksi jika semuanya berhasil
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Successfully Added!',
+                'data' => $product,
+            ], 201);
+
+        } catch (\Exception $e) {
+            // Rollback transaksi jika terjadi error
+            DB::rollback();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function edit($id)
