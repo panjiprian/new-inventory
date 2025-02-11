@@ -9,8 +9,6 @@
 
         <form action="/ubah-varian/{{$variant->id}}" method="POST" class="w-1/2 mt-5">
             @csrf
-            @method('PUT')
-
             <div class="mt-3">
                 <label class="text-sm text-gray-600" for="category_id">Category</label>
                 <div class="border-2 p-1 @error('category_id') border-red-400 @enderror">
@@ -49,7 +47,7 @@
             </div>
 
             <div class="mt-3">
-                <button class="bg-gray-600 text-white w-full p-2 rounded text-sm">Update Variant</button>
+                <button class="btn-update-variant bg-gray-600 text-white w-full p-2 rounded text-sm">Update Variant</button>
             </div>
         </form>
     </div>

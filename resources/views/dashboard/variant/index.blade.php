@@ -69,6 +69,9 @@
 
                         @if(Auth::user()->role === 'admin')
                         <td class="p-2 flex gap-2">
+                            <button data-id="{{$variant->id}}" class="btn btn-delete bg-red-500 py-1 px-4 rounded text-white">
+                                <i class="ri-delete-bin-line"></i>
+                            </button>
                             <a href="/ubah-varian/{{$variant->id}}" class="bg-yellow-400 py-1 px-4 rounded text-white">
                                 <i class="ri-edit-box-line"></i>
                             </a>
@@ -85,4 +88,5 @@
         </div>
     </div>
 </div>
+
 @endsection

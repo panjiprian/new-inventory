@@ -30,12 +30,11 @@ class VariantController extends Controller
                   ->orWhere('variants.code', 'LIKE', "%{$request->search}%");
         }
 
-        $perPage = $request->input('per_page', 10); // Default 10 data per halaman
+        $perPage = $request->input('per_page', 10);
         $variants = $query->paginate($perPage);
 
         return view('dashboard.variant.index', compact('variants'));
     }
-
 
     public function create()
     {
@@ -52,17 +51,25 @@ class VariantController extends Controller
         ]);
 
         $created = Variant::create([
-            'code' => strtoupper($request->code), // Simpan code dalam huruf besar
+            'code' => $request->code, // Biarkan user input manual
             'name' => $request->name,
             'category_id' => $request->category_id,
             'created_by' => Auth::user()->id,
         ]);
 
         if ($created) {
-            return redirect('/varian')->with('message', 'Data Successfully Added');
+            return response()->json([
+                'success' => true,
+                'message' => 'Variant Successfully Added',
+                'redirect' => url('/varian') // Redirect URL setelah sukses
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to add variant'
+            ], 500);
         }
     }
-
 
 
     public function delete($id)
@@ -71,15 +78,15 @@ class VariantController extends Controller
         $deleted = $variant->delete();
 
         if ($deleted) {
-            session()->flash('message', 'Data Successfully Deleted');
-            return response()->json(['message' => 'Data Successfully Deleted'], 200);
+            session()->flash('message', 'Variant Successfully Deleted');
+            return response()->json(['message' => 'Variant Successfully Deleted'], 200);
         }
     }
 
     public function edit($id)
     {
         $variant = Variant::findOrFail($id);
-        $categories = Category::all(); // Kirim kategori ke view
+        $categories = Category::all();
         return view('dashboard.variant.update', compact('variant', 'categories'));
     }
 
@@ -87,7 +94,7 @@ class VariantController extends Controller
     {
         $this->validate($request, [
             'name' => ['required', 'unique:variants,name,' . $id],
-            'code'=> ['required', 'unique:variants,code,' . $id],
+            'code' => ['required', 'unique:variants,code,' . $id],
             'category_id' => ['required', 'exists:categories,id']
         ]);
 
@@ -100,7 +107,15 @@ class VariantController extends Controller
         ]);
 
         if ($updated) {
-            return redirect('/varian')->with('message', 'Data Successfully Updated');
+            return redirect('/varian')->with([
+                'message' => 'Data Successfully Updated',
+                'alert-type' => 'success'
+            ]);
+        } else {
+            return redirect()->back()->with([
+                'message' => 'Failed to update variant',
+                'alert-type' => 'error'
+            ]);
         }
     }
 
