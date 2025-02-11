@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div class="containerTabelCategory mt-5">
-            <table id="varianTabel" class="w-full text-sm text-gray-600">
+            <table id="categoryTabel" class="w-full text-sm text-gray-600">
                 <thead>
                     <tr class="font-bold border-b-2 p-2">
                         <td class="p-2">No</td>
@@ -59,7 +59,7 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#varianTabel').DataTable();
+            $('#categoryTabel').DataTable();
         });
     </script>
     </div>

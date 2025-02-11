@@ -83,6 +83,13 @@ document.querySelectorAll(".btn-delete-category").forEach((btnDelete) => {
     );
 });
 
+document.querySelectorAll(".btn-delete-variant").forEach((btnDelete) => {
+    deleteModal(
+        btnDelete,
+        "/hapus-varian",
+        "Data that has been deleted cannot be restored"
+    );
+});
 document.querySelectorAll(".btn-delete-product").forEach((btnDelete) => {
     deleteModal(
         btnDelete,

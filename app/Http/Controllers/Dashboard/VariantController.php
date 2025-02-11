@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\VariantExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class VariantController extends Controller
 {
@@ -30,8 +31,7 @@ class VariantController extends Controller
                   ->orWhere('variants.code', 'LIKE', "%{$request->search}%");
         }
 
-        $perPage = $request->input('per_page', 10);
-        $variants = $query->paginate($perPage);
+        $variants = $query->paginate($request->input('per_page', 10));
 
         return view('dashboard.variant.index', compact('variants'));
     }
@@ -51,23 +51,15 @@ class VariantController extends Controller
         ]);
 
         $created = Variant::create([
-            'code' => $request->code, // Biarkan user input manual
+            'code' => $request->code,
             'name' => $request->name,
             'category_id' => $request->category_id,
             'created_by' => Auth::user()->id,
         ]);
-
         if ($created) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Variant Successfully Added',
-                'redirect' => url('/varian') // Redirect URL setelah sukses
-            ]);
+            return redirect('/varian')->with('success', 'Variant Successfully Added');
         } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to add variant'
-            ], 500);
+            return back()->with('error', 'Failed to add variant');
         }
     }
 
@@ -77,10 +69,9 @@ class VariantController extends Controller
         $variant = Variant::findOrFail($id);
         $deleted = $variant->delete();
 
-        if ($deleted) {
-            session()->flash('message', 'Variant Successfully Deleted');
-            return response()->json(['message' => 'Variant Successfully Deleted'], 200);
-        }
+        return response()->json([
+            'message' => $deleted ? 'Variant Successfully Deleted' : 'Failed to delete variant'
+        ], $deleted ? 200 : 500);
     }
 
     public function edit($id)
@@ -92,30 +83,24 @@ class VariantController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => ['required', 'unique:variants,name,' . $id],
-            'code' => ['required', 'unique:variants,code,' . $id],
+        $variant = Variant::findOrFail($id);
+
+        $request->validate([
+            'name' => ['required', Rule::unique('variants', 'name')->ignore($id)],
             'category_id' => ['required', 'exists:categories,id']
         ]);
 
-        $variant = Variant::findOrFail($id);
+        // Pastikan code tidak berubah
         $updated = $variant->update([
             'name' => $request->name,
-            'code' => strtoupper($request->code),
             'category_id' => $request->category_id,
-            'updated_by' => Auth::user()->id,
+            'updated_by' => Auth::id(),
         ]);
 
         if ($updated) {
-            return redirect('/varian')->with([
-                'message' => 'Data Successfully Updated',
-                'alert-type' => 'success'
-            ]);
+            return redirect('/varian')->with('success', 'Variant Successfully Updated');
         } else {
-            return redirect()->back()->with([
-                'message' => 'Failed to update variant',
-                'alert-type' => 'error'
-            ]);
+            return back()->with('error', 'Failed to update variant');
         }
     }
 

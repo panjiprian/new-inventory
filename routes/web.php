@@ -60,7 +60,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/input-varian', [VariantController::class, 'store']);
     Route::delete('/hapus-varian/{id}', [VariantController::class, 'delete']);
     Route::get('/ubah-varian/{id}', [VariantController::class, 'edit']);
-    Route::post('/ubah-varian/{id}', [VariantController::class, 'update']);
+    Route::put('/ubah-varian/{id}', [VariantController::class, 'update']);
+    Route::patch('/ubah-varian/{id}', [VariantController::class, 'update']);
     Route::get('/excel/varian',[VariantController::class,'exportExcel']);
 
 

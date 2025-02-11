@@ -7,17 +7,7 @@
             <h2 class="text-gray-600 font-bold">Input Variant</h2>
         </div>
 
-        @if(session('message'))
-            <script>
-                Swal.fire({
-                    title: "{{ session('alert-type', 'info') }}",
-                    text: "{{ session('message') }}",
-                    icon: "{{ session('alert-type', 'info') }}"
-                });
-            </script>
-        @endif
-
-        <form action="/input-varian" method="POST" class="w-1/2 mt-5" autocomplete="off">
+        <form id="variantForm" action="/input-varian" method="POST" class="w-1/2 mt-5" autocomplete="off">
             @csrf
             <div class="mt-3">
                 <label class="text-sm text-gray-600" for="category_id">Category</label>
@@ -57,11 +47,30 @@
             </div>
 
             <div class="mt-3">
-                <div class="mt-3">
-                    <button class="btn-save-variant bg-gray-600 text-white w-full p-2 rounded text-sm">Save Variant</button>
-                </div>
+                <button type="button" id="btnSubmit" class="btn btn-save bg-gray-600 text-white w-full p-2 rounded text-sm">
+                    Save Category
+                </button>
             </div>
         </form>
     </div>
+    <script>
+        document.getElementById("btnSubmit").addEventListener("click", function(event) {
+            event.preventDefault(); // Mencegah submit langsung
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to save this variant?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, save it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("variantForm").submit();
+                }
+            });
+        });
+        </script>
 </div>
 @endsection
