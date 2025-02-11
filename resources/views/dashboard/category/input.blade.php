@@ -7,7 +7,7 @@
             <h2 class="text-gray-600 font-bold">Input Category</h2>
         </div>
 
-        <form action="/input-kategori" method="POST" class="w-1/2 mt-5">
+        <form id="categoryForm" action="/input-kategori" method="POST" class="w-1/2 mt-5">
             @csrf
             <div class="mt-3">
                 <label class="text-sm text-gray-600" for="name">Category Name</label>
@@ -28,10 +28,25 @@
                 @enderror
             </div>
             <div class="mt-3">
-                <button id="btn-save" class="bg-gray-600 text-white w-full p-2 rounded text-sm">Save Category</button>
+                <button type="submit" class="btn-save bg-gray-600 text-white w-full p-2 rounded text-sm" id="btnSave">Save Category</button>
             </div>
         </form>
     </div>
 </div>
+
 <script src="{{ asset('js/index.js') }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("categoryForm");
+        const submitBtn = document.getElementById("btnSave");
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault(); // ⛔ Hindari submit langsung, hanya pakai fetch di index.js
+            if (submitBtn.disabled) return;
+            submitBtn.disabled = true; // 🚀 Hindari klik ganda
+
+            setTimeout(() => { submitBtn.disabled = false; }, 3000); // ✅ Aktifkan lagi setelah 3 detik (fallback)
+        });
+    });
+</script>
 @endsection

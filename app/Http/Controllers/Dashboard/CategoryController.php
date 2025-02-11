@@ -16,25 +16,17 @@ class CategoryController extends Controller
         $query = Category::query()
             ->leftJoin('users as creator', 'categories.created_by', '=', 'creator.id')
             ->leftJoin('users as updater', 'categories.updated_by', '=', 'updater.id')
-            ->select(
-                'categories.*',
-                'creator.name as creator_name',
-                'updater.name as updater_name'
-            );
+            ->select('categories.*', 'creator.name as creator_name', 'updater.name as updater_name');
 
         if ($request->has('search')) {
             $query->where('categories.name', 'LIKE', "%{$request->search}%")
                   ->orWhere('categories.code', 'LIKE', "%{$request->search}%");
         }
 
-        $perPage = $request->input('per_page', 10); // Default 10 data per halaman
-        $categories = $query->paginate($perPage);
+        $categories = $query->paginate($request->input('per_page', 10));
 
         return view('dashboard.category.index', compact('categories'));
     }
-
-
-
 
     public function create()
     {
@@ -43,67 +35,62 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        // Konversi kode ke huruf besar SEBELUM validasi
+        $request->merge(['code' => strtoupper($request->code)]);
+
+        $validated = $request->validate([
             'code' => ['required', 'unique:categories,code', 'max:10'],
             'name' => ['required', 'unique:categories,name']
         ]);
 
-        $created = Category::create([
-            'code' => strtoupper($request->code),
-            'name' => $request->name,
-            'created_by' => Auth::user()->id,
-        ]);
+        $validated['created_by'] = Auth::user()->id;
 
-        if ($created) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Category Successfully Added',
-                'redirect' => url('/kategori') // Redirect URL setelah sukses
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to add category'
-            ], 500);
-        }
-    }
+        $created = Category::create($validated);
 
-
-
-    public function delete($id)
-    {
-        $category = Category::findOrFail($id);
-        $deleted = $category->delete();
-
-        if ($deleted) {
-            session()->flash('message', 'Category Successfully Deleted');
-            return response()->json(['message' => 'Category Successfully Deleted'], 200);
-        }
+        return response()->json([
+            'success' => (bool) $created,
+            'message' => $created ? 'Category Successfully Added' : 'Failed to add category',
+            'redirect' => $created ? url('/kategori') : null
+        ], $created ? 200 : 500);
     }
 
     public function edit($id)
     {
         $category = Category::findOrFail($id);
-        return view('dashboard.category.update', ['category' => $category]);
+        return view('dashboard.category.update', compact('category'));
     }
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
+        $category = Category::findOrFail($id);
+
+        // Konversi kode ke huruf besar SEBELUM validasi
+        $request->merge(['code' => strtoupper($request->code)]);
+
+        $validated = $request->validate([
             'code' => ['required', 'unique:categories,code,' . $id, 'max:10'],
             'name' => ['required', 'unique:categories,name,' . $id]
         ]);
 
-        $category = Category::findOrFail($id);
-        $updated = $category->update([
-            'code' => strtoupper($request->code),
-            'name' => $request->name,
-            'updated_by' => Auth::user()->id,
-        ]);
+        $validated['updated_by'] = Auth::user()->id;
 
-        if ($updated) {
-            return redirect('/kategori')->with('message', 'Category Successfully Updated');
-        }
+        $updated = $category->update($validated);
+
+        return response()->json([
+            'success' => (bool) $updated,
+            'message' => $updated ? 'Category Successfully Updated' : 'Failed to update category',
+            'redirect' => $updated ? url('/kategori') : null
+        ], $updated ? 200 : 500);
+    }
+
+    public function delete($id)
+    {
+        $deleted = Category::findOrFail($id)->delete();
+
+        return response()->json([
+            'success' => (bool) $deleted,
+            'message' => $deleted ? 'Category Successfully Deleted' : 'Failed to delete category'
+        ], $deleted ? 200 : 500);
     }
 
     public function exportExcel()
