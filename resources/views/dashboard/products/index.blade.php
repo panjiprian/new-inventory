@@ -58,17 +58,12 @@
                         <td class="p-2 w-[150px]">
                             <img src="{{ $product->image ? asset('storage/'.$product->image) : asset('images/default-product.png') }}" class="w-full h-auto rounded">
                         </td>
-
                         <td class="p-2">
-                            @if ($product->created_user_name)
-                                {{ $product->created_user_name }} ({{ \Carbon\Carbon::parse($product->created_at)->format('d M Y') }})
-                            @else
-                                -
-                            @endif
+                            {{ $product->createdBy->name ?? '-' }} ({{ $product->created_at->format('d M Y') }})
                         </td>
                         <td class="p-2">
-                            @if ($product->updated_user_name)
-                                {{ $product->updated_user_name }} ({{ \Carbon\Carbon::parse($product->updated_at)->format('d M Y') }})
+                            @if ($product->updatedBy && $product->updatedBy->name)
+                                {{ $product->updatedBy->name }} ({{ $product->updated_at->format('d M Y') }})
                             @else
                                 -
                             @endif
