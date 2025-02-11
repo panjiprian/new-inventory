@@ -12,41 +12,49 @@
             <div class="mt-3">
                 <label class="text-sm text-gray-600" for="name">Category Name</label>
                 <div class="border-2 p-1 @error('name') border-red-400 @enderror">
-                    <input type="text" name="name" id="name" class="w-full p-2 border rounded-lg" value="{{ old('name', $category->name ?? '') }}" required>
+                    <input name="name" class="w-full h-full focus:outline-none text-sm" id="name" type="text">
                 </div>
                 @error('name')
                     <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
                 @enderror
             </div>
+
             <div class="mt-3">
                 <label class="text-sm text-gray-600" for="code">Category Code</label>
                 <div class="border-2 p-1 @error('code') border-red-400 @enderror">
-                    <input type="text" name="code" id="code" class="w-full p-2 border rounded-lg" value="{{ old('code', $category->code ?? '') }}" required>
+                    <input name="code" class="w-full h-full focus:outline-none text-sm" id="code" type="text">
                 </div>
                 @error('code')
                     <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
                 @enderror
             </div>
+
             <div class="mt-3">
-                <button type="submit" class="btn-save bg-gray-600 text-white w-full p-2 rounded text-sm" id="btnSave">Save Category</button>
+                <button type="button" id="btnSubmit" class="btn btn-save bg-gray-600 text-white w-full p-2 rounded text-sm">
+                    Save Category
+                </button>
             </div>
         </form>
     </div>
 </div>
 
-<script src="{{ asset('js/index.js') }}"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const form = document.getElementById("categoryForm");
-        const submitBtn = document.getElementById("btnSave");
+document.getElementById("btnSubmit").addEventListener("click", function(event) {
+    event.preventDefault(); // Mencegah submit langsung
 
-        form.addEventListener("submit", function (event) {
-            event.preventDefault(); // ⛔ Hindari submit langsung, hanya pakai fetch di index.js
-            if (submitBtn.disabled) return;
-            submitBtn.disabled = true; // 🚀 Hindari klik ganda
-
-            setTimeout(() => { submitBtn.disabled = false; }, 3000); // ✅ Aktifkan lagi setelah 3 detik (fallback)
-        });
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to save this category?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, save it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById("categoryForm").submit();
+        }
     });
+});
 </script>
 @endsection

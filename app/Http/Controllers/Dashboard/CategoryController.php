@@ -47,11 +47,11 @@ class CategoryController extends Controller
 
         $created = Category::create($validated);
 
-        return response()->json([
-            'success' => (bool) $created,
-            'message' => $created ? 'Category Successfully Added' : 'Failed to add category',
-            'redirect' => $created ? url('/kategori') : null
-        ], $created ? 200 : 500);
+        if ($created) {
+            return redirect('/kategori')->with('success', 'Category Successfully Added');
+        } else {
+            return back()->with('error', 'Failed to add category');
+        }
     }
 
     public function edit($id)
@@ -76,12 +76,13 @@ class CategoryController extends Controller
 
         $updated = $category->update($validated);
 
-        return response()->json([
-            'success' => (bool) $updated,
-            'message' => $updated ? 'Category Successfully Updated' : 'Failed to update category',
-            'redirect' => $updated ? url('/kategori') : null
-        ], $updated ? 200 : 500);
+        if ($updated) {
+            return redirect('/kategori')->with('success', 'Category Successfully Updated');
+        } else {
+            return back()->with('error', 'Failed to update category');
+        }
     }
+
 
     public function delete($id)
     {
