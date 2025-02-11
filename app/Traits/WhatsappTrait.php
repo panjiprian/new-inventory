@@ -13,7 +13,7 @@ trait WhatsappTrait
         $url = $fileUrl ? 'https://wa.smartappscare.com/send-media' : 'https://wa.smartappscare.com/send-message';
 
         $api = 'TIXJobMR5VY9QrEGDKSofUnkRNdasW';
-        $sender = '62895603502918';
+        $sender = '6283167627589';
 
         $data = [
             'api_key' => $api,

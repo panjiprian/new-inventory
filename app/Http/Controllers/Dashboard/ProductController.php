@@ -67,10 +67,10 @@ class ProductController extends Controller
         $imagePath = $request->file('image') ? $request->file('image')->store('products') : null;
 
         // Ambil semua admin
-        $admins = User::where('role', 'admin')->whereNotNull('phone')->get();
+        $admins = User::where('role', 'officer')->whereNotNull('phone')->get();
 
         // Pesan yang ingin dikirim
-        $message = 'Produk baru telah ditambahkan: ' . $request->name . ' dengan harga ' . $request->price;
+        $message = 'Produk baru telah ditambahkan: ' . $request->name . ' dengan harga Rp ' . number_format($request->price, 0, ',', '.');
 
         // Mulai transaksi untuk memastikan konsistensi data
         DB::beginTransaction();
