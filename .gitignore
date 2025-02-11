@@ -5,6 +5,7 @@
 /storage/frameworks/views
 /storage/frameworks/cache
 /vendor
+/public/storage
 .env.backup
 .env.production
 .phpactor.json
