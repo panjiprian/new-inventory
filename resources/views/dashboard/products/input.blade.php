@@ -2,14 +2,16 @@
 
 @section('container')
     <div class="container px-4">
+
+
+
         <div class="bg-white p-5 mt-5 rounded-lg">
             <div class="flex">
                 <h2 class="text-gray-600 font-bold">Input New Product</h2>
             </div>
 
-            <form action="/input-barang" method="POST" enctype="multipart/form-data" class="w-1/2 mt-5">
+            <form id="product-form">
                 @csrf
-
                 <div class="mt-3">
                     <label class="text-sm text-gray-600" for="unique_code">Unique Code</label>
                     <div class="border-2 p-1">
@@ -84,12 +86,97 @@
                 </div>
 
                 <div class="mt-3">
-                    <button class="bg-gray-600 text-white w-full p-2 rounded text-sm">Save Product</button>
+                    <button type="submit"
+                        class="bg-gray-600 text-white w-full p-2 rounded text-sm flex items-center justify-center">Save
+                        Product</button>
+                    <a class="bg-gray-600 text-white w-full mt-2 p-2 rounded text-sm flex items-center justify-center"
+                        href="/barang">Back</a>
                 </div>
+
+
             </form>
+
         </div>
 
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $("#product-form").submit(function(event) {
+                    event.preventDefault();
+
+                    // Menampilkan loading spinner
+                    Swal.fire({
+                        title: 'Processing...',
+                        text: 'Please wait while we process your request.',
+                        icon: 'info',
+                        allowOutsideClick: false, // Jangan biarkan menutup dengan klik luar
+                        showConfirmButton: false, // Sembunyikan tombol konfirmasi
+                        didOpen: () => {
+                            Swal.showLoading(); // Tampilkan loading spinner
+                        }
+                    });
+
+                    let formData = new FormData(this);
+
+                    $.ajax({
+                        url: '/input-barang/store',
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        headers: {
+                            "X-CSRF-TOKEN": $('input[name="_token"]').val()
+                        },
+                        success: function(response) {
+                            // Sembunyikan loading spinner dan tampilkan pesan sukses/error
+                            Swal.close(); // Menutup SweetAlert loading spinner
+
+                            if (response.success) {
+                                Swal.fire({
+                                    title: "Success!",
+                                    text: response.message,
+                                    icon: "success",
+                                    confirmButtonText: "OK"
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "Error!",
+                                    text: response.message || "Something went wrong!",
+                                    icon: "error"
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            // Sembunyikan loading spinner dan tampilkan pesan error
+                            Swal.close(); // Menutup SweetAlert loading spinner
+
+                            let errorMessages = "";
+                            let response = xhr.responseJSON;
+
+                            if (response && response.message) {
+                                errorMessages = response
+                                .message; // Menampilkan pesan error dari server
+                            } else if (response && response.errors) {
+                                $.each(response.errors, function(key, value) {
+                                    errorMessages += value[0] + "\n";
+                                });
+                            } else {
+                                errorMessages = "Failed to submit data!";
+                            }
+
+                            Swal.fire({
+                                title: "Error!",
+                                text: errorMessages,
+                                icon: "error"
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
+
+
         <script>
             $(document).ready(function() {
                 // Update variants on category change
@@ -104,9 +191,14 @@
                             type: "GET",
                             data: { category_id: categoryId },
                             success: function(response) {
+                                $('#variant').html(
+                                    '<option value="" disabled selected>Select Variant</option>'
+                                ); // Reset variant
                                 variantSelect.empty().append('<option value="" disabled selected>Select Variant</option>');
                                 $.each(response.variants, function(key, variant) {
-                                    variantSelect.append(`<option value="${variant.id}">${variant.name}</option>`);
+                                    $('#variant').append(
+                                        `<option value="${variant.id}">${variant.name}</option>`
+                                    );
                                 });
                             },
                             error: function() {

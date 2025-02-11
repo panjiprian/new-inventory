@@ -12,12 +12,11 @@ trait WhatsappTrait
     {
         $url = $fileUrl ? 'https://wa.smartappscare.com/send-media' : 'https://wa.smartappscare.com/send-message';
 
-        $apiKey = config('app.whatsapp_api_key');
-
-        $sender = '62895603502918';
+        $api = 'TIXJobMR5VY9QrEGDKSofUnkRNdasW';
+        $sender = '6283167627589';
 
         $data = [
-            'api_key' => $apiKey,
+            'api_key' => $api,
             'sender' => $sender,
             'number' => $noWa
         ];
@@ -42,12 +41,14 @@ trait WhatsappTrait
                 Log::info('Pesan WhatsApp berhasil dikirim ke ' . $noWa);
                 return true;
             } else {
-                Log::error('WhatsApp API Error: ' . $response->body());
-                return false;
+                $errorMessage = 'WhatsApp API Error: ' . $response->body();
+                Log::error($errorMessage);
+                throw new \Exception($errorMessage); // Lemparkan exception jika gagal
             }
         } catch (\Exception $e) {
-            Log::error('Error saat mengirim pesan WhatsApp: ' . $e->getMessage());
-            return false;
+            $errorMessage = 'Error saat mengirim pesan WhatsApp: ' . $e->getMessage();
+            Log::error($errorMessage);
+            throw new \Exception($errorMessage); // Lemparkan exception untuk pengelolaan lebih lanjut
         }
     }
 }

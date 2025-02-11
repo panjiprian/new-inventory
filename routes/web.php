@@ -28,7 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/barang', [ProductController::class, 'index']);
     Route::get('/input-barang', [ProductController::class, 'create']);
     Route::delete('/hapus-barang/{id}', [ProductController::class, 'delete']);
-    Route::post('/input-barang', [ProductController::class, 'store']);
+    Route::post('/input-barang/store', [ProductController::class, 'store']);
     Route::get('/ubah-barang/{id}', [ProductController::class, 'edit']);
     Route::post('/ubah-barang/{id}', [ProductController::class, 'update']);
     Route::get('/products',[ProductController::class,'getAllProducts']);
