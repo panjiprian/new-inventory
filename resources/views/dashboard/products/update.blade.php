@@ -86,9 +86,9 @@
             </div>
             <div class="mt-3">
                 <button class="bg-blue-500 text-white w-full mt-2 p-2 rounded text-sm flex items-center justify-center"
-                style="background-color: rgb(0, 136, 255);">Update Product</button>
+                style="background-color: #3085d6;">Update Product</button>
                 <a class="bg-red-500 text-white w-full mt-2 p-2 rounded text-sm flex items-center justify-center"
-                        href="/barang" style="background-color: rgb(255, 0, 0);">Back</a>
+                        href="/barang" style="background-color: #d33;">Back</a>
             </div>
         </form>
     </div>

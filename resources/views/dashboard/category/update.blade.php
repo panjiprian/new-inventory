@@ -7,7 +7,7 @@
             <h2 class="text-gray-600 font-bold">Update Category</h2>
         </div>
 
-        <form id="updateCategoryForm" action="/ubah-kategori/{{$category->id}}" method="POST" class="w-1/2 mt-5">
+        <form id="updateCategoryForm" action="/ubah-kategori/{{$category->id}}" method="POST">
             @csrf
             @method('PUT')
 
@@ -32,9 +32,12 @@
             </div>
 
             <div class="mt-3">
-                <button type="button" id="btnUpdate" class="btn btn-update bg-gray-600 text-white w-full p-2 rounded text-sm">
+                <button type="button" id="btnUpdate" class="btn btn-update bg-blue-500 text-white w-full mt-2 p-2 rounded text-sm flex items-center justify-center"
+                        style="background-color: #3085d6;">
                     Update Category
                 </button>
+                <a class="bg-red-500 text-white w-full mt-2 p-2 rounded text-sm flex items-center justify-center"
+                        href="/kategori" style="background-color: #d33;">Back</a>
             </div>
         </form>
     </div>

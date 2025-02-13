@@ -17,17 +17,9 @@
                     @endif
                     <a  class="text-sm bg-gray-700 text-white inline-block mt-2 px-2 py-1" href="/excel/suppliers">Export Excel</a>
                 </div>
-                <form method="get" action="/supplier" class="form">
-                    <div class="flex">
-                        <div class="border p-1 px-2 rounded-l">
-                          <input id="search" name="search" class="focus:outline-none text-sm" type="text" placeholder="Search Supplier">
-                        </div>
-                        <button type="submit" class="text-sm bg-gray-700 p-2 rounded-r text-white h-full">Search</button>
-                    </div>
-                </form>
             </div>
-
-            <table class="w-full mt-5 text-sm text-gray-600">
+            <div class="containerTabelSupplier mt-5">
+            <table id="supplierTabel" class="w-full mt-5 text-sm text-gray-600">
                 <thead>
                     <tr class="font-bold border-b-2 p-2">
                         <td class="p-2">No</td>
@@ -70,5 +62,11 @@
                 {{$suppliers->links('pagination::tailwind')}}
             </div>
         </div>
+        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('#supplierTabel   ').DataTable();
+            });
+        </script>
     </div>
 @endsection

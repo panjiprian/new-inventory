@@ -7,7 +7,7 @@
             <h2 class="text-gray-600 font-bold">Input Variant</h2>
         </div>
 
-        <form id="variantForm" action="/input-varian" method="POST" class="w-1/2 mt-5" autocomplete="off">
+        <form id="variantForm" action="/input-varian" method="POST" autocomplete="off">
             @csrf
             <div class="mt-3">
                 <label class="text-sm text-gray-600" for="category_id">Category</label>
@@ -47,9 +47,12 @@
             </div>
 
             <div class="mt-3">
-                <button type="button" id="btnSubmit" class="btn btn-save bg-gray-600 text-white w-full p-2 rounded text-sm">
-                    Save Category
+                <button type="button" id="btnSubmit" class="btn btn-save bg-blue-500 text-white w-full mt-2 p-2 rounded text-sm flex items-center justify-center"
+                        style="background-color: #3085d6;">
+                    Save Variant
                 </button>
+                <a class="bg-red-500 text-white w-full mt-2 p-2 rounded text-sm flex items-center justify-center"
+                        href="/varian" style="background-color: #d33;">Back</a>
             </div>
         </form>
     </div>

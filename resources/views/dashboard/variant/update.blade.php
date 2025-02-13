@@ -7,7 +7,7 @@
             <h2 class="text-gray-600 font-bold">Update Variant</h2>
         </div>
 
-        <form id="updateVariantForm" action="/ubah-varian/{{$variant->id}}" method="POST" class="w-1/2 mt-5">
+        <form id="updateVariantForm" action="/ubah-varian/{{$variant->id}}" method="POST">
             @csrf
             @method('PUT') {{-- Menggunakan PUT untuk update --}}
 
@@ -49,9 +49,12 @@
             </div>
 
             <div class="mt-3">
-                <button type="button" id="btnUpdateVariant" class="btn-update-variant bg-gray-600 text-white w-full p-2 rounded text-sm">
+                <button type="button" id="btnUpdateVariant" class="btn-update-variant bg-blue-500 text-white w-full mt-2 p-2 rounded text-sm flex items-center justify-center"
+                        style="background-color: #3085d6;">
                     Update Variant
                 </button>
+                <a class="bg-red-500 text-white w-full mt-2 p-2 rounded text-sm flex items-center justify-center"
+                        href="/varian" style="background-color: #d33;">Back</a>
             </div>
         </form>
     </div>

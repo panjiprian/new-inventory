@@ -55,7 +55,7 @@
         </li>
         <li class="mb-1 group">
          <a href="/kategori" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
-            <i class="ri-store-line mr-3 text-lg"></i>
+            <i class="ri-file-list-3-fill mr-3 text-lg"></i>
             <span class="text-sm">Category</span>
          </a>
         </li>
@@ -67,13 +67,13 @@
            </li>
         <li class="mb-1 mt-5 group">
          <a href="/barang-masuk" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
-            <i class="ri-file-add-fill mr-3 text-lg"></i>
+            <i class="ri-arrow-down-fill mr-3 text-lg"></i>
             <span class="text-sm">Receiving</span>
          </a>
         </li>
         <li class="mb-1 group">
          <a href="/barang-keluar" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
-            <i class="ri-folder-reduce-fill mr-3 text-lg"></i>
+            <i class="ri-arrow-up-fill mr-3 text-lg"></i>
             <span class="text-sm">Dispatching</span>
          </a>
         </li>
@@ -93,7 +93,7 @@
         @endif
         <li class="mb-1 group mt-5">
             <a href="/" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
-               <i class="ri-book-read-line text-lg mr-3"></i>
+               <i class="ri-book-open-line text-lg mr-3"></i>
                <span class="text-sm">Manual Book</span>
             </a>
         </li>
@@ -110,9 +110,9 @@
     <main class="md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 min-h-screen">
         <!-- Navbar atas -->
         <div class="bg-white py-2 px-4 flex items-center justify-between shadow-md shadow-black/5 sticky top-0 left-0 z-30">
-            <button class="text-gray-700" id="menu-toggle">
+            {{-- <button class="text-gray-700" id="menu-toggle">
                 <i class="ri-menu-line text-2xl"></i>
-            </button>
+            </button> --}}
             <div class="mr-2 flex items-center">
                 <p class="text-sm text-gray-600">{{ Auth::user()->name }}</p>
             </div>
