@@ -29,21 +29,21 @@
             </div>
 
             <div class="mt-3">
-                <label class="text-sm text-gray-600" for="code">Variant Code</label>
-                <div class="border-2 p-1 @error('code') border-red-400 @enderror">
-                    <input name="code" value="{{$variant->code}}" class="w-full h-full focus:outline-none text-sm bg-gray-200" id="code" type="text" readonly>
-                </div>
-                @error('code')
-                    <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
-                @enderror
-            </div>
-
-            <div class="mt-3">
                 <label class="text-sm text-gray-600" for="name">Variant Name</label>
                 <div class="border-2 p-1 @error('name') border-red-400 @enderror">
                     <input name="name" value="{{$variant->name}}" class="w-full h-full focus:outline-none text-sm" id="name" type="text">
                 </div>
                 @error('name')
+                    <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
+                @enderror
+            </div>
+
+            <div class="mt-3">
+                <label class="text-sm text-gray-600" for="code">Variant Code</label>
+                <div class="border-2 p-1 @error('code') border-red-400 @enderror">
+                    <input name="code" value="{{$variant->code}}" class="w-full h-full focus:outline-none text-sm bg-gray-200" id="code" type="text" readonly>
+                </div>
+                @error('code')
                     <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
                 @enderror
             </div>
