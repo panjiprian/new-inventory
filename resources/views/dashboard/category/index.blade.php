@@ -58,8 +58,17 @@
     </div>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $('#categoryTabel').DataTable();
+        $(document).ready(function() {
+            $('#categoryTabel').DataTable({
+                "paging": true,
+                "searching": true,
+                "lengthChange": false,
+                "pageLength": 10,
+                "info": false,
+                "language": {
+                    "emptyTable": "No category available"
+                }
+            });
         });
     </script>
     </div>
