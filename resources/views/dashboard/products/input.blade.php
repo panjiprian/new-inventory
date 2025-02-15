@@ -44,8 +44,11 @@
                 <div class="mt-3">
                     <label class="text-sm text-gray-600" for="image">Photo</label>
                     <div class="border-2 p-1">
-                        <input type="file" name="image" class="text-sm w-full h-full focus:outline-none" id="image">
+                        <input type="file" name="image" class="text-sm w-full h-full focus:outline-none"
+                            id="image">
+
                         <img id="image-preview" class="mt-2 rounded" style="max-width: 150px; display: none;">
+                        <p id="image-info" class="text-gray-600 mt-2"></p>
                     </div>
                 </div>
 
@@ -53,10 +56,12 @@
                     <div class="w-full">
                         <label class="text-sm text-gray-600" for="category">Category</label>
                         <div class="border">
-                            <select name="category_id" class="w-full text-black p-2 text-sm bg-transparent focus:outline-none" id="category">
+                            <select name="category_id"
+                                class="w-full text-black p-2 text-sm bg-transparent focus:outline-none" id="category">
                                 <option value="" selected disabled>Select Category</option>
                                 @foreach ($categories as $category)
-                                    <option class="text-sm" value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                    <option class="text-sm" value="{{ $category->id }}"
+                                        {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                         {{ $category->name }}
                                     </option>
                                 @endforeach
@@ -69,7 +74,8 @@
                     <div class="w-full">
                         <label class="text-sm text-gray-600" for="variant">Variant</label>
                         <div class="border">
-                            <select name="variant_id" class="w-full text-black p-2 text-sm bg-transparent focus:outline-none" id="variant">
+                            <select name="variant_id"
+                                class="w-full text-black p-2 text-sm bg-transparent focus:outline-none" id="variant">
                                 <option value="" selected disabled>Select Variant</option>
                             </select>
                         </div>
@@ -156,7 +162,7 @@
 
                             if (response && response.message) {
                                 errorMessages = response
-                                .message; // Menampilkan pesan error dari server
+                                    .message; // Menampilkan pesan error dari server
                             } else if (response && response.errors) {
                                 $.each(response.errors, function(key, value) {
                                     errorMessages += value[0] + "\n";
@@ -173,12 +179,6 @@
                         }
                     });
                 });
-            });
-        </script>
-
-
-        <script>
-            $(document).ready(function() {
                 // Update variants on category change
                 $('#category').on('change', function() {
                     let categoryId = $(this).val();
@@ -189,11 +189,17 @@
                         $.ajax({
                             url: "{{ route('get-variants') }}",
                             type: "GET",
-                            data: { category_id: categoryId },
+                            data: {
+                                category_id: categoryId
+                            },
                             success: function(response) {
-                                variantSelect.empty().append('<option value="" disabled selected>Select Variant</option>');
+                                variantSelect.empty().append(
+                                    '<option value="" disabled selected>Select Variant</option>'
+                                );
                                 $.each(response.variants, function(key, variant) {
-                                    variantSelect.append(`<option value="${variant.id}">${variant.name}</option>`);
+                                    variantSelect.append(
+                                        `<option value="${variant.id}">${variant.name}</option>`
+                                    );
                                 });
                             },
                             error: function() {
@@ -209,7 +215,7 @@
                 });
 
                 // Generate unique code on category & variant change
-                $('#category, #variant').change(function () {
+                $('#category, #variant').change(function() {
                     let category_id = $('#category').val();
                     let variant_id = $('#variant').val();
                     let uniqueCodeInput = $('#unique_code');
@@ -224,37 +230,52 @@
                                 variant_id: variant_id,
                                 _token: "{{ csrf_token() }}"
                             },
-                            success: function (response) {
+                            success: function(response) {
                                 if (response.unique_code) {
-                                    uniqueCodeInput.hide().val(response.unique_code).fadeIn(500).removeClass('text-gray-400');
+                                    uniqueCodeInput.hide().val(response.unique_code).fadeIn(500)
+                                        .removeClass('text-gray-400');
                                 }
                             },
-                            error: function () {
-                                uniqueCodeInput.val('Error Generating Code').addClass('text-red-500');
+                            error: function() {
+                                uniqueCodeInput.val('Error Generating Code').addClass(
+                                    'text-red-500');
                             }
                         });
                     }
                 });
 
                 // Format price input
-                $('#price').on('input', function () {
+                $('#price').on('input', function() {
                     let value = $(this).val();
-                    if (value < 0) { $(this).val(0); }
-                    $('#price-preview').text(new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(value));
+                    if (value < 0) {
+                        $(this).val(0);
+                    }
+                    $('#price-preview').text(new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR'
+                    }).format(value));
                 });
 
-                // Image preview
-                $('#image').change(function () {
-                    let reader = new FileReader();
-                    reader.onload = function (e) {
-                        $('#image-preview').attr('src', e.target.result).fadeIn();
-                    };
-                    reader.readAsDataURL(this.files[0]);
+                $('#image').change(function() {
+                    // Periksa apakah ada file yang dipilih
+                    if (this.files && this.files[0]) {
+                        let file = this.files[0];
+                        // Tampilkan informasi file
+                        $('#image-info').text(
+                            `File Name: ${file.name} | Size: ${(file.size / 1024).toFixed(2)} KB`);
+                        // Tampilkan preview gambar
+                        let reader = new FileReader();
+                        reader.onload = function(e) {
+                            $('#image-preview').attr('src', e.target.result).fadeIn();
+                        };
+                        reader.readAsDataURL(file);
+                    }
                 });
+
 
                 // Live character count
                 function updateCharCount(input, counter) {
-                    $(input).on('input', function () {
+                    $(input).on('input', function() {
                         $(counter).text($(this).val().length + " characters");
                     });
                 }
@@ -262,5 +283,6 @@
                 updateCharCount('#description', '#description-count');
             });
         </script>
+        <script></script>
     </div>
 @endsection
