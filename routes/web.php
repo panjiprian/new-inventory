@@ -9,7 +9,7 @@ use App\Http\Controllers\Dashboard\ProductSuppliesController;
 use App\Http\Controllers\Dashboard\SupplierController;
 use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\VariantController;
-use App\Models\Variant;
+
 
 /*
 |--------------------------------------------------------------------------

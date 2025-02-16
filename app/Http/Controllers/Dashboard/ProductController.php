@@ -77,15 +77,15 @@ class ProductController extends Controller
 
         try {
             // Kirim pesan ke setiap admin
-            foreach ($admins as $admin) {
-                $phone = str_replace('+', '', $admin->phone);
-                $isSent = $this->kirimPesanWhatsapp($phone, $message);
+            // foreach ($admins as $admin) {
+            //     $phone = str_replace('+', '', $admin->phone);
+            //     $isSent = $this->kirimPesanWhatsapp($phone, $message);
 
-                // Jika pengiriman pesan ke salah satu admin gagal, batalkan proses
-                if (!$isSent) {
-                    throw new \Exception("Pesan WhatsApp gagal dikirim ke admin: " . $admin->name);
-                }
-            }
+            //     // Jika pengiriman pesan ke salah satu admin gagal, batalkan proses
+            //     if (!$isSent) {
+            //         throw new \Exception("Pesan WhatsApp gagal dikirim ke admin: " . $admin->name);
+            //     }
+            // }
 
             // Jika semua pesan berhasil, simpan produk
             $product = Product::create([
@@ -107,7 +107,6 @@ class ProductController extends Controller
                 'message' => 'Data Successfully Added!',
                 'data' => $product,
             ], 201);
-
         } catch (\Exception $e) {
             // Rollback transaksi jika terjadi error
             DB::rollback();
@@ -130,15 +129,11 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
-
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric'],
-            'category_id' => ['required', 'exists:categories,id'],
-            'variant_id' => ['required', 'exists:variants,id'],
             'image' => ['nullable', 'image', 'max:1024'],
-            'code' => ['unique:products,code,' . $id], // Pastikan kode tetap unik, kecuali untuk produk ini sendiri
         ]);
 
         $imagePath = $product->image;
@@ -148,17 +143,32 @@ class ProductController extends Controller
             $imagePath = $request->file('image')->store('products');
         }
 
-        $product->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'price' => $request->price,
-            'image' => $imagePath,
-            'category_id' => $request->category_id,
-            'variant_id' => $request->variant_id,
-            'updated_by' => Auth::id(),
-        ]);
+        try {
+            $product->update([
+                'name' => $request->name,
+                'description' => $request->description,
+                'price' => $request->price,
+                'image' => $imagePath,
+                'updated_by' => Auth::id(),
+            ]);
 
-        return redirect('/barang')->with('message', 'Data Successfully Updated');
+            // Commit transaksi jika semuanya berhasil
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Successfully Added!',
+                'data' => $product,
+            ], 201);
+        } catch (\Exception $e) {
+            // Rollback transaksi jika terjadi error
+            DB::rollback();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function delete($id)

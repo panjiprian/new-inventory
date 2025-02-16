@@ -43,7 +43,9 @@
                     <div class="border-2 p-1">
                         <input type="file" name="image" class="text-sm w-full h-full focus:outline-none"
                             id="image">
+
                         <img id="image-preview" class="mt-2 rounded" style="max-width: 150px; display: none;">
+                        <p id="image-info" class="text-gray-600 mt-2"></p>
                     </div>
                 </div>
 
@@ -174,12 +176,6 @@
                         }
                     });
                 });
-            });
-        </script>
-
-
-        <script>
-            $(document).ready(function() {
                 // Update variants on category change
                 $('#category').on('change', function() {
                     let categoryId = $(this).val();
@@ -194,14 +190,11 @@
                                 category_id: categoryId
                             },
                             success: function(response) {
-                                $('#variant').html(
-                                    '<option value="" disabled selected>Select Variant</option>'
-                                ); // Reset variant
                                 variantSelect.empty().append(
                                     '<option value="" disabled selected>Select Variant</option>'
-                                    );
+                                );
                                 $.each(response.variants, function(key, variant) {
-                                    $('#variant').append(
+                                    variantSelect.append(
                                         `<option value="${variant.id}">${variant.name}</option>`
                                     );
                                 });
@@ -260,14 +253,22 @@
                     }).format(value));
                 });
 
-                // Image preview
                 $('#image').change(function() {
-                    let reader = new FileReader();
-                    reader.onload = function(e) {
-                        $('#image-preview').attr('src', e.target.result).fadeIn();
-                    };
-                    reader.readAsDataURL(this.files[0]);
+                    // Periksa apakah ada file yang dipilih
+                    if (this.files && this.files[0]) {
+                        let file = this.files[0];
+                        // Tampilkan informasi file
+                        $('#image-info').text(
+                            `File Name: ${file.name} | Size: ${(file.size / 1024).toFixed(2)} KB`);
+                        // Tampilkan preview gambar
+                        let reader = new FileReader();
+                        reader.onload = function(e) {
+                            $('#image-preview').attr('src', e.target.result).fadeIn();
+                        };
+                        reader.readAsDataURL(file);
+                    }
                 });
+
 
                 // Live character count
                 function updateCharCount(input, counter) {
@@ -279,5 +280,6 @@
                 updateCharCount('#description', '#description-count');
             });
         </script>
+        <script></script>
     </div>
 @endsection
