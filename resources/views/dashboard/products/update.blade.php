@@ -61,11 +61,15 @@
 
 
                 <!-- Submit Button (diletakkan di bawah untuk kedua kolom) -->
-                <div class="col-span-2 mt-6">
+                <div class="col-span-1 md:col-span-2 flex gap-4">
                     <button type="submit"
                         class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
                         Update Product
                     </button>
+                    <a href="/barang"
+                        class="bg-red-600 text-white w-full p-2 rounded-md shadow-sm text-center hover:bg-red-700">
+                        Back
+                    </a>
                 </div>
             </form>
         </div>

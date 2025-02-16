@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
-    <div class="container px-4">
+    <div class="container mx-auto max-w-4xl px-4">
         <div class="bg-white p-5 mt-5 rounded-lg">
             <div class="flex">
                 <h2 class="text-gray-600 font-bold">Input Category</h2>
@@ -31,7 +31,7 @@
                     @enderror
                 </div>
 
-                <div class="mt-3">
+                <div class="col-span-1 md:col-span-2 flex gap-4">
                     <button type="button" id="btnSubmit"
                         class="btn btn-save bg-blue-500 text-white w-full mt-2 p-2 rounded text-sm flex items-center justify-center"
                         style="background-color: #3085d6;">

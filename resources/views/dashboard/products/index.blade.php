@@ -31,7 +31,7 @@
                 </form>
             </div>
 
-            <table class="w-full mt-5 text-sm text-gray-600">
+            <table id="product-table" class="w-full mt-5 text-sm text-gray-600">
                 <thead>
                     <tr class="font-bold border-b-2 p-2">
                         <td class="p-2">No</td>
@@ -127,10 +127,10 @@
                         <div class="w-full md:w-2/3 space-y-4">
                             <p><strong>Product Code:</strong> <span id="modal-product-code"></span></p>
                             <p><strong>Product Name:</strong> <span id="modal-product-name"></span></p>
+                            <p><strong>Description:</strong> <span id="modal-product-description"></span></p>
                             <p><strong>Price:</strong> <span id="modal-product-price"></span></p>
                             <p><strong>Category:</strong> <span id="modal-product-category"></span></p>
                             <p><strong>Variant:</strong> <span id="modal-product-variant"></span></p>
-                            <p><strong>Description:</strong> <span id="modal-product-description"></span></p>
                         </div>
                     </div>
                 </div>
@@ -141,6 +141,17 @@
 
     <script>
         $(document).ready(function() {
+            $(document).ready(function() {
+                $('#product-table').DataTable({
+                    "pagingType": "simple", // Bisa gunakan simple, numbers, atau full_numbers
+                    "language": {
+                        "paginate": {
+                            "previous": "←",
+                            "next": "→"
+                        }
+                    }
+                });
+            });
             $('[data-modal-toggle="default-modal"]').on('click', function() {
                 // Ambil data dari tombol
                 const productCode = $(this).data('code');
@@ -158,7 +169,8 @@
                 $('#modal-product-price').text(productPrice);
                 $('#modal-product-category').text(productCategory);
                 $('#modal-product-variant').text(productVariant);
-                $('#modal-product-image').html(`<img src="${productImage}" alt="Product Image" class="w-32 h-auto mt-4 rounded">`);
+                $('#modal-product-image').html(
+                    `<img src="${productImage}" alt="Product Image" class="w-32 h-auto mt-4 rounded">`);
             });
             // Event untuk menampilkan modal detail
             $('.btn-detail-product').on('click', function(e) {
@@ -206,6 +218,33 @@
                     toast.classList.add("hidden");
                 }, 3000);
             }
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".btn-delete-product").forEach(button => {
+                button.addEventListener("click", function() {
+                    let productId = this.getAttribute("data-id");
+                    if (confirm("Are you sure you want to delete this product?")) {
+                        fetch(`/delete-product/${productId}`, {
+                                method: "DELETE",
+                                headers: {
+                                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.message) {
+                                    alert("Product deleted successfully!");
+                                    location.reload();
+                                } else {
+                                    alert("Failed to delete product!");
+                                }
+                            })
+                            .catch(error => console.error(error));
+                    }
+                });
+            });
         });
     </script>
 @endsection
