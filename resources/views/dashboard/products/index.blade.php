@@ -220,7 +220,7 @@
             }
         });
     </script>
-    <script>
+    {{-- <script>
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll(".btn-delete-product").forEach(button => {
                 button.addEventListener("click", function() {
@@ -246,5 +246,5 @@
                 });
             });
         });
-    </script>
+    </script> --}}
 @endsection

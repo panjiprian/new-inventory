@@ -51,8 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/input-kategori', [CategoryController::class, 'store']);
     Route::delete('/hapus-kategori/{id}', [CategoryController::class, 'delete']);
     Route::get('/ubah-kategori/{id}', [CategoryController::class, 'edit']);
-    Route::put('/ubah-kategori/{id}', [CategoryController::class, 'update']);
-    Route::patch('/ubah-kategori/{id}', [CategoryController::class, 'update']);
+    Route::post('/ubah-kategori/{id}', [CategoryController::class, 'update']);
     Route::get('/excel/kategori',[CategoryController::class,'exportExcel']);
 
     Route::get('/varian', [VariantController::class, 'index']);
@@ -60,8 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/input-varian', [VariantController::class, 'store']);
     Route::delete('/hapus-varian/{id}', [VariantController::class, 'delete']);
     Route::get('/ubah-varian/{id}', [VariantController::class, 'edit']);
-    Route::put('/ubah-varian/{id}', [VariantController::class, 'update']);
-    Route::patch('/ubah-varian/{id}', [VariantController::class, 'update']);
+    Route::post('/ubah-varian/{id}', [VariantController::class, 'update']);
     Route::get('/excel/varian',[VariantController::class,'exportExcel']);
 
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\CategoryExport;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class CategoryController extends Controller
 
         if ($request->has('search')) {
             $query->where('categories.name', 'LIKE', "%{$request->search}%")
-                  ->orWhere('categories.code', 'LIKE', "%{$request->search}%");
+                ->orWhere('categories.code', 'LIKE', "%{$request->search}%");
         }
 
         $categories = $query->paginate($request->input('per_page', 10));
@@ -45,12 +46,22 @@ class CategoryController extends Controller
 
         $validated['created_by'] = Auth::user()->id;
 
-        $created = Category::create($validated);
+        try {
+            $created = Category::create($validated);
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Successfully Added!',
+                'data' => $created,
+            ], 201);
+        } catch (\Exception $e) {
+            // Rollback transaksi jika terjadi error
+            DB::rollback();
 
-        if ($created) {
-            return redirect('/kategori')->with('success', 'Category Successfully Added');
-        } else {
-            return back()->with('error', 'Failed to add category');
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -74,12 +85,22 @@ class CategoryController extends Controller
 
         $validated['updated_by'] = Auth::user()->id;
 
-        $updated = $category->update($validated);
+        try {
+            $updated = $category->update($validated);
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Successfully Updated!',
+                'data' => $updated,
+            ], 201);
+        } catch (\Exception $e) {
+            // Rollback transaksi jika terjadi error
+            DB::rollback();
 
-        if ($updated) {
-            return redirect('/kategori')->with('success', 'Category Successfully Updated');
-        } else {
-            return back()->with('error', 'Failed to update category');
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ], 500);
         }
     }
 

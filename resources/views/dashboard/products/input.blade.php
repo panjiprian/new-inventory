@@ -140,7 +140,7 @@
                                 icon: "success",
                                 confirmButtonText: "OK"
                             }).then(() => {
-                                location.reload();
+                                window.location.href = "/barang";
                             });
                         } else {
                             Swal.fire({
@@ -284,6 +284,5 @@
             updateCharCount('#description', '#description-count');
         });
     </script>
-    <script></script>
     </div>
 @endsection
