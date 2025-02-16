@@ -9,75 +9,77 @@
         </div>
     @endif
     <div class="w-full flex-wrap gap-4">
-        <div class="bg-white mt-5 p-5 rounded-lg">
-            <div class="flex justify-between">
+        <div class="bg-white mt-5 p-5 rounded-lg shadow-lg">
+            <div class="flex justify-between items-center">
                 <div class="text-left">
-                    <h2 class="text-gray-600 font-bold">Supplier Data</h2>
+                    <h2 class="text-gray-800 font-bold text-lg">Suppliers</h2>
                     @if (Auth::user()->role === 'admin')
-                        <a href="/input-supplier" class="text-sm inline-block bg-gray-700 text-white mt-2 px-2 py-1">Input
-                            Supplier</a>
+                        <a href="/input-supplier"
+                            class="text-sm bg-blue-600 text-white inline-block mt-2 px-4 py-2 rounded-md hover:bg-blue-700">
+                            Input Supplier
+                        </a>
                     @endif
-                    <a class="text-sm bg-gray-700 text-white inline-block mt-2 px-2 py-1" href="/excel/suppliers">Export
-                        Excel</a>
+                    <a href="/excel/suppliers"
+                        class="text-sm bg-green-600 text-white inline-block mt-2 px-4 py-2 rounded-md hover:bg-green-700">
+                        Export Excel</a>
                 </div>
             </div>
-            <div class="containerTabelSupplier mt-5">
-                <table id="supplierTabel" class="w-full mt-5 text-sm text-gray-600">
+
+            <!-- Table Section -->
+            <div class="containerTabelSupplier mt-5 overflow-x-auto">
+                <table id="supplierTabel"
+                    class="min-w-full text-sm text-left text-gray-700 border-collapse border border-gray-200">
                     <thead>
-                        <tr class="font-bold border-b-2 p-2">
-                            <td class="p-2">No</td>
-                            <td class="p-2">Supplier Name</td>
-                            <td class="p-2">Address</td>
-                            <td class="p-2">Email</td>
-                            <td class="p-2">Phone Number</td>
-                            <td class="p-2">Action</td>
+                        <tr class="font-bold bg-gray-100 text-gray-700 border-b-2 border-gray-300">
+                            <td class="p-2 border border-gray-300">No</td>
+                            <td class="p-2 border border-gray-300">Supplier Name</td>
+                            <td class="p-2 border border-gray-300">Address</td>
+                            <td class="p-2 border border-gray-300">Email</td>
+                            <td class="p-2 border border-gray-300">Phone Number</td>
+                            <td class="p-2 border border-gray-300">Action</td>
                         </tr>
                     </thead>
                     <tbody>
-                        @php
-                            $noSupplier = 1;
-                        @endphp
                         @foreach ($suppliers as $supplier)
-                            <tr class="border-b p-2">
-                                <td class="p-2">{{ $loop->iteration }}</td>
-                                <td class="p-2">{{ $supplier->name }}</td>
-                                <td class="p-2">{{ $supplier->address }}</td>
-                                <td class="p-2">{{ $supplier->email }}</td>
-                                <td class="p-2">{{ $supplier->phone }}</td>
+                            <tr class="border-b border-gray-300">
+                                <td class="p-2 border border-gray-300">{{ $loop->iteration }}</td>
+                                <td class="p-2 border border-gray-300">{{ $supplier->name }}</td>
+                                <td class="p-2 border border-gray-300">{{ $supplier->address }}</td>
+                                <td class="p-2 border border-gray-300">{{ $supplier->email }}</td>
+                                <td class="p-2 border border-gray-300">{{ $supplier->phone }}</td>
+
                                 @if (Auth::user()->role === 'admin')
-                                    <td class="p-2 flex gap-2">
+                                    <td class="p-2 flex justify-center items-center gap-2 border border-gray-300">
                                         <button data-id="{{ $supplier->id }}"
-                                            class="btn-delete-supplier bg-red-500 py-1 px-4 rounded text-white">
+                                            class="btn-delete-supplier bg-red-600 py-1 px-4 rounded text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300">
                                             <i class="ri-delete-bin-line"></i>
                                         </button>
                                         <a href="/ubah-supplier/{{ $supplier->id }}"
-                                            class="bg-yellow-400 py-1 px-4 rounded text-white">
+                                            class="bg-yellow-500 py-1 px-4 rounded text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300">
                                             <i class="ri-edit-box-line"></i>
                                         </a>
                                     </td>
                                 @endif
                             </tr>
-                            @php
-                                $noSupplier++;
-                            @endphp
                         @endforeach
                     </tbody>
                 </table>
-                <div class="mt-5">
-                    {{ $suppliers->links('pagination::tailwind') }}
-                </div>
             </div>
-            <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
             <script>
                 $(document).ready(function() {
                     $('#supplierTabel').DataTable({
-                        "paging": true,
-                        "searching": true,
-                        "lengthChange": false,
-                        "pageLength": 10,
-                        "info": false,
+                        "paging": true, // Mengaktifkan pagination
+                        "searching": true, // Mengaktifkan pencarian
+                        "lengthChange": false, // Menonaktifkan opsi untuk mengubah jumlah data per halaman
+                        "pageLength": 10, // Jumlah data per halaman default
+                        "info": false, // Menyembunyikan informasi total data
+                        "responsive": true, // Menambahkan responsivitas
+                        "order": [
+                            [1, "asc"]
+                        ], // Sorting default berdasarkan kolom kedua (Variant Code)
                         "language": {
-                            "emptyTable": "No suppliers available"
+                            "emptyTable": "No supplier available", // Pesan jika tabel kosong
+                            "search": "Search Supplier:" // Placeholder pencarian
                         }
                     });
                 });

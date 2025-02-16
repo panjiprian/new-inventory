@@ -17,7 +17,11 @@ class CategoryController extends Controller
         $query = Category::query()
             ->leftJoin('users as creator', 'categories.created_by', '=', 'creator.id')
             ->leftJoin('users as updater', 'categories.updated_by', '=', 'updater.id')
-            ->select('categories.*', 'creator.name as creator_name', 'updater.name as updater_name');
+            ->select(
+                'categories.*',
+                'creator.name as creator_name',
+                'updater.name as updater_name'
+            );
 
         if ($request->has('search')) {
             $query->where('categories.name', 'LIKE', "%{$request->search}%")

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Supplier;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SupplierExport;
 use Illuminate\Http\Request;
@@ -20,13 +21,12 @@ class SupplierController extends Controller
     }
 
     public function delete ($id) {
-        $supplier = Supplier::findOrFail($id);
-        $deletedSupplier = $supplier->delete();
+        $deleted = Supplier::findOrFail($id)->delete();
 
-        if($deletedSupplier){
-            session()->flash('message', 'Data Successfully Delete');
-            return response()->json(['message'=> 'Data Successfully Delete'],200);
-        }
+        return response()->json([
+            'success' => (bool) $deleted,
+            'message' => $deleted ? 'Supplier Successfully Deleted' : 'Failed to delete supplier'
+        ], $deleted ? 200 : 500);
     }
 
     public function create () {
@@ -34,22 +34,29 @@ class SupplierController extends Controller
     }
 
     public function store (Request $request) {
-        $this->validate($request, [
+        $validated = $request->validate([
             'name'=> ['required'],
             'address'=>['required'],
             'email'=>['required'],
             'phone'=>['required'],
         ]);
 
-        $createdSupplier = Supplier::create([
-            'name'=>$request->name,
-            'address'=>$request->address,
-            'email'=>$request->email,
-            'phone'=>$request->phone
-        ]);
+        try {
+            $created = Supplier::create($validated);
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Successfully Added!',
+                'data' => $created,
+            ], 201);
+        } catch (\Exception $e) {
+            // Rollback transaksi jika terjadi error
+            DB::rollback();
 
-        if($createdSupplier){
-            return redirect('/supplier')->with('message', 'Data Successfully Added');
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -59,24 +66,30 @@ class SupplierController extends Controller
     }
 
     public function update(Request $request, $id) {
-
-        $this->validate($request, [
+        $supplier = Supplier::findOrFail($id);
+        $validated = $request->validate([
             'name'=> ['required'],
             'address'=>['required'],
             'email'=>['required'],
             'phone'=>['required'],
         ]);
 
-        $supplier = Supplier::findOrFail($id);
-        $updated = $supplier->update([
-            'name'=>$request->name,
-            'address'=>$request->address,
-            'email'=>$request->email,
-            'phone'=>$request->phone
-        ]);
+        try {
+            $updated = $supplier->update($validated);
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Successfully Updated!',
+                'data' => $updated,
+            ], 201);
+        } catch (\Exception $e) {
+            // Rollback transaksi jika terjadi error
+            DB::rollback();
 
-        if($updated){
-            return redirect('/supplier')->with('message', 'Data Successfully Addeda');
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ], 500);
         }
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Variant;
 use App\Models\Category;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\VariantExport;
 use Illuminate\Http\Request;
@@ -44,22 +45,31 @@ class VariantController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $validated = $request->validate([
             'name' => ['required', 'unique:variants,name'],
             'code' => ['required', 'unique:variants,code'],
             'category_id' => ['required', 'exists:categories,id']
         ]);
 
-        $created = Variant::create([
-            'code' => $request->code,
-            'name' => $request->name,
-            'category_id' => $request->category_id,
-            'created_by' => Auth::user()->id,
-        ]);
-        if ($created) {
-            return redirect('/varian')->with('success', 'Variant Successfully Added');
-        } else {
-            return back()->with('error', 'Failed to add variant');
+        $validated['created_by'] = Auth::user()->id;
+
+
+        try {
+            $created = Variant::create($validated);
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Successfully Added!',
+                'data' => $created,
+            ], 201);
+        } catch (\Exception $e) {
+            // Rollback transaksi jika terjadi error
+            DB::rollback();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -85,22 +95,29 @@ class VariantController extends Controller
     {
         $variant = Variant::findOrFail($id);
 
-        $request->validate([
+        $validated = $request->validate([
             'name' => ['required', Rule::unique('variants', 'name')->ignore($id)],
             'category_id' => ['required', 'exists:categories,id']
         ]);
 
-        // Pastikan code tidak berubah
-        $updated = $variant->update([
-            'name' => $request->name,
-            'category_id' => $request->category_id,
-            'updated_by' => Auth::id(),
-        ]);
+        $validated['updated_by'] = Auth::user()->id;
 
-        if ($updated) {
-            return redirect('/varian')->with('success', 'Variant Successfully Updated');
-        } else {
-            return back()->with('error', 'Failed to update variant');
+        try {
+            $updated = $variant->update($validated);
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Successfully Updated!',
+                'data' => $updated,
+            ], 201);
+        } catch (\Exception $e) {
+            // Rollback transaksi jika terjadi error
+            DB::rollback();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ], 500);
         }
     }
 

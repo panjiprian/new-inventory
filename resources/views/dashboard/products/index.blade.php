@@ -12,13 +12,15 @@
         <div class="bg-white mt-5 p-5 rounded-lg">
             <div class="flex justify-between">
                 <div class="text-left">
-                    <h2 class="text-gray-600 font-bold">Product Data</h2>
+                    <h2 class="text-gray-800 font-bold text-lg">Product Data</h2>
                     @if (Auth::user()->role === 'admin')
-                        <a href="/input-barang" class="text-sm inline-block bg-gray-700 text-white mt-2 px-2 py-1">Input
-                            Product</a>
+                        <a href="/input-barang"
+                        class="text-sm bg-blue-600 text-white inline-block mt-2 px-4 py-2 rounded-md hover:bg-blue-700">
+                        Input Product</a>
                     @endif
-                    <a class="text-sm bg-gray-700 text-white inline-block mt-2 px-2 py-1" href="/excel/products">Export
-                        Excel</a>
+                    <a href="/excel/products"
+                    class="text-sm bg-green-600 text-white inline-block mt-2 px-4 py-2 rounded-md hover:bg-green-700">
+                        Export Excel</a>
                 </div>
                 <form method="get" action="/barang" class="form">
                     <div class="border p-1 px-2 rounded flex items-center gap-2">
@@ -31,7 +33,7 @@
                 </form>
             </div>
 
-            <table id="product-table" class="w-full mt-5 text-sm text-gray-600">
+            <table class="w-full mt-5 text-sm text-gray-600">
                 <thead>
                     <tr class="font-bold border-b-2 p-2">
                         <td class="p-2">No</td>
@@ -141,17 +143,6 @@
 
     <script>
         $(document).ready(function() {
-            $(document).ready(function() {
-                $('#product-table').DataTable({
-                    "pagingType": "simple", // Bisa gunakan simple, numbers, atau full_numbers
-                    "language": {
-                        "paginate": {
-                            "previous": "←",
-                            "next": "→"
-                        }
-                    }
-                });
-            });
             $('[data-modal-toggle="default-modal"]').on('click', function() {
                 // Ambil data dari tombol
                 const productCode = $(this).data('code');
@@ -169,8 +160,7 @@
                 $('#modal-product-price').text(productPrice);
                 $('#modal-product-category').text(productCategory);
                 $('#modal-product-variant').text(productVariant);
-                $('#modal-product-image').html(
-                    `<img src="${productImage}" alt="Product Image" class="w-32 h-auto mt-4 rounded">`);
+                $('#modal-product-image').html(`<img src="${productImage}" alt="Product Image" class="w-32 h-auto mt-4 rounded">`);
             });
             // Event untuk menampilkan modal detail
             $('.btn-detail-product').on('click', function(e) {
@@ -220,7 +210,7 @@
             }
         });
     </script>
-    {{-- <script>
+    <script>
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll(".btn-delete-product").forEach(button => {
                 button.addEventListener("click", function() {
@@ -246,5 +236,5 @@
                 });
             });
         });
-    </script> --}}
+    </script>
 @endsection

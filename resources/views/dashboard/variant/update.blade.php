@@ -1,82 +1,112 @@
 @extends('layouts.main')
 
 @section('container')
-<div class="container px-4">
-    <div class="bg-white p-5 mt-5 rounded-lg">
-        <div class="flex">
-            <h2 class="text-gray-600 font-bold">Update Variant</h2>
-        </div>
-
-        <form id="updateVariantForm" action="/ubah-varian/{{$variant->id}}" method="POST">
+    <div class="container mx-auto max-w-4xl px-4">
+        <form id="variant-form" class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
             @csrf
-            @method('PUT') {{-- Menggunakan PUT untuk update --}}
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Update Variant</h2>
 
-            <div class="mt-3">
-                <label class="text-sm text-gray-600" for="category_id">Category</label>
-                <div class="border-2 p-1 @error('category_id') border-red-400 @enderror">
-                    <select name="category_id" id="category_id" class="w-full h-full focus:outline-none text-sm">
-                        <option value="">-- Select Category --</option>
-                        @foreach ($categories as $category)
-                            <option value="{{$category->id}}" {{ $variant->category_id == $category->id ? 'selected' : '' }}>
-                                {{$category->name}}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+            <!-- Category Field -->
+            <div class="mb-4">
+                <label for="category_id" class="block mb-1 text-sm font-medium text-gray-700">Category</label>
+                <select name="category_id" id="category_id"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
+                    <option value="">-- Select Category --</option>
+                    @foreach ($categories as $category)
+                        <option value="{{ $category->id }}" {{ $variant->category_id == $category->id ? 'selected' : '' }}>
+                            {{ $category->name }}
+                        </option>
+                    @endforeach
+                </select>
                 @error('category_id')
-                    <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div class="mt-3">
-                <label class="text-sm text-gray-600" for="name">Variant Name</label>
-                <div class="border-2 p-1 @error('name') border-red-400 @enderror">
-                    <input name="name" value="{{$variant->name}}" class="w-full h-full focus:outline-none text-sm" id="name" type="text">
-                </div>
+            <!-- Variant Name Field -->
+            <div class="mb-4">
+                <label for="name" class="block mb-1 text-sm font-medium text-gray-700">Variant Name</label>
+                <input type="text" name="name" id="name" value="{{ $variant->name }}"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
                 @error('name')
-                    <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div class="mt-3">
-                <label class="text-sm text-gray-600" for="code">Variant Code</label>
-                <div class="border-2 p-1 @error('code') border-red-400 @enderror">
-                    <input name="code" value="{{$variant->code}}" class="w-full h-full focus:outline-none text-sm bg-gray-200" id="code" type="text" readonly>
-                </div>
+            <!-- Variant Code Field (Read-only) -->
+            <div class="mb-4">
+                <label for="code" class="block mb-1 text-sm font-medium text-gray-700">Variant Code</label>
+                <input type="text" name="code" id="code" value="{{ $variant->code }}"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed focus:ring-blue-500 focus:border-blue-500 text-sm"
+                    readonly>
                 @error('code')
-                    <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div class="mt-3">
-                <button type="button" id="btnUpdateVariant" class="btn-update-variant bg-blue-500 text-white w-full mt-2 p-2 rounded text-sm flex items-center justify-center"
-                        style="background-color: #3085d6;">
+            <!-- Action Buttons -->
+            <div class="flex justify-between gap-4 mt-6">
+                <button type="submit"
+                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1">
                     Update Variant
                 </button>
-                <a class="bg-red-500 text-white w-full mt-2 p-2 rounded text-sm flex items-center justify-center"
-                        href="/varian" style="background-color: #d33;">Back</a>
+                <a href="/varian"
+                    class="w-full text-center bg-red-600 text-white py-2 px-4 rounded-lg shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1">
+                    Back
+                </a>
             </div>
         </form>
     </div>
-</div>
 
-<script>
-    document.getElementById("btnUpdateVariant").addEventListener("click", function(event) {
-        event.preventDefault(); // Mencegah submit langsung
+    <script>
+        $(document).ready(function() {
+            // Handle form submission
+            $('#variant-form').on('submit', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Processing...',
+                    text: 'Please wait while we process your request.',
+                    icon: 'info',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                let formData = new FormData(this);
+                let url = "/ubah-varian/{{ $variant->id }}";
 
-        Swal.fire({
-            title: "Are you sure?",
-            text: "Do you want to update this variant?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, update it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById("updateVariantForm").submit();
-            }
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Success!",
+                            text: response.message,
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        }).then(() => {
+                            window.location.href = "/varian";
+                        });
+                    },
+                    error: function(xhr) {
+                        let errors = xhr.responseJSON.errors;
+                        let errorMessage = "";
+                        $.each(errors, function(key, value) {
+                            errorMessage += value + "<br>";
+                        });
+                        Swal.fire({
+                            title: "Error!",
+                            html: errorMessage,
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        });
+                    }
+                });
+            });
         });
-    });
-</script>
+    </script>
 @endsection
