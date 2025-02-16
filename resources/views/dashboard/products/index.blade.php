@@ -127,10 +127,10 @@
                         <div class="w-full md:w-2/3 space-y-4">
                             <p><strong>Product Code:</strong> <span id="modal-product-code"></span></p>
                             <p><strong>Product Name:</strong> <span id="modal-product-name"></span></p>
-                            <p><strong>Description:</strong> <span id="modal-product-description"></span></p>
                             <p><strong>Price:</strong> <span id="modal-product-price"></span></p>
                             <p><strong>Category:</strong> <span id="modal-product-category"></span></p>
                             <p><strong>Variant:</strong> <span id="modal-product-variant"></span></p>
+                            <p><strong>Description:</strong> <span id="modal-product-description"></span></p>
                         </div>
                     </div>
                 </div>
@@ -206,33 +206,6 @@
                     toast.classList.add("hidden");
                 }, 3000);
             }
-        });
-    </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            document.querySelectorAll(".btn-delete-product").forEach(button => {
-                button.addEventListener("click", function() {
-                    let productId = this.getAttribute("data-id");
-                    if (confirm("Are you sure you want to delete this product?")) {
-                        fetch(`/delete-product/${productId}`, {
-                                method: "DELETE",
-                                headers: {
-                                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.message) {
-                                    alert("Product deleted successfully!");
-                                    location.reload();
-                                } else {
-                                    alert("Failed to delete product!");
-                                }
-                            })
-                            .catch(error => console.error(error));
-                    }
-                });
-            });
         });
     </script>
 @endsection

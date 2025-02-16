@@ -30,18 +30,19 @@
     <title>Inventory Gloglo</title>
 </head>
 <body class="text-black">
-    <!-- Navbar -->
-    <div class="bg-gray-900 h-full p-4 fixed top-0 left-0 z-50 w-64 transform -translate-x-full transition-transform duration-300" id="sidebar">
-        <a href="#" class="flex items-center pb-4 border-b border-b-gray-800">
-            <img src="{{ asset('image/gloglo-logo.png') }}" height="110px" width="300px" alt="">
-        </a>
-        <ul class="mt-4">
-            <li class="mb-1 group">
-                <a href="/" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
-                    <i class="ri-dashboard-line mr-3 text-lg"></i>
-                    <span class="text-sm">Overview</span>
-                </a>
-            </li>
+
+    <div class="w-64 bg-gray-900 h-full p-4 fixed top-0 left-0">
+     <a href="#" class="flex items-center pb-4 border-b border-b-gray-800">
+        <img src="{{ asset('image/gloglo-logo.png') }}" height="110px" width="300px" alt="">
+      </a>
+
+      <ul class="mt-4">
+        <li class="mb-1 group">
+         <a href="/" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
+            <i class="ri-dashboard-line mr-3 text-lg"></i>
+            <span class="text-sm">Overview</span>
+         </a>
+        </li>
         <li class="mb-1 group">
          <a href="/barang" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
             <i class="ri-archive-2-line mr-3 text-lg"></i>
@@ -56,25 +57,25 @@
         </li>
         <li class="mb-1 group">
          <a href="/kategori" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
-            <i class="ri-file-list-3-fill mr-3 text-lg"></i>
+            <i class="ri-file-list-2-line mr-3 text-lg"></i>
             <span class="text-sm">Category</span>
          </a>
         </li>
         <li class="mb-1 group">
             <a href="/varian" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
-               <i class="ri-store-line mr-3 text-lg"></i>
+                <i class="ri-file-list-3-line mr-3 text-lg"></i>
                <span class="text-sm">Variant</span>
             </a>
            </li>
         <li class="mb-1 mt-5 group">
          <a href="/barang-masuk" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
-            <i class="ri-arrow-down-fill mr-3 text-lg"></i>
+            <i class="ri-arrow-down-circle-line mr-3 text-lg"></i>
             <span class="text-sm">Receiving</span>
          </a>
         </li>
         <li class="mb-1 group">
          <a href="/barang-keluar" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
-            <i class="ri-arrow-up-fill mr-3 text-lg"></i>
+            <i class="ri-arrow-up-circle-line mr-3 text-lg"></i>
             <span class="text-sm">Dispatching</span>
          </a>
         </li>
@@ -94,79 +95,28 @@
         @endif
         <li class="mb-1 group mt-5">
             <a href="/" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
-               <i class="ri-book-open-line text-lg mr-3"></i>
+               <i class="ri-book-read-line text-lg mr-3"></i>
                <span class="text-sm">Manual Book</span>
             </a>
         </li>
-        <li class="mb-1 group">
-            <a href="/logout" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
-                <i class="ri-logout-circle-line text-lg mr-3"></i>
-                <span class="text-sm">Logout</span>
-            </a>
+        <li class="mb-1 group mt-5">
+         <a href="/logout" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-600 rounded-lg">
+            <i class="ri-logout-circle-line text-lg mr-3"></i>
+            <span class="text-sm">Logout</span>
+         </a>
         </li>
-    </ul>
-</div>
+      </ul>
+   </div>
 
-    <!-- Main Content -->
-    <main class="md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 min-h-screen">
-        <!-- Navbar atas -->
-        <div class="bg-white py-2 px-4 flex items-center justify-between shadow-md shadow-black/5 sticky top-0 left-0 z-30">
-            {{-- <button class="text-gray-700" id="menu-toggle">
-                <i class="ri-menu-line text-2xl"></i>
-            </button> --}}
-            <div class="mr-2 flex items-center">
-                <p class="text-sm text-gray-600">{{ Auth::user()->name }}</p>
-            </div>
+   <main class="md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 min-h-screen">
+    <div class="bg-white py-2 px-4 flex items-center justify-between shadow-md shadow-black/5 sticky top-0 left-0 z-30">
+        <div class="mr-2 flex items-center">
+            <p class="text-sm text-gray-600">{{Auth::user()->name}}</p>
         </div>
-        @yield('container')
-    </main>
-    {{-- <style>
-        /* Fallback untuk transformasi jika Tailwind tidak bekerja */
-        .-translate-x-full {
-            transform: translateX(-100%);
-        }
-        main {
-    transition: margin-left 0.3s ease-in-out; /* Animasi agar lebih smooth */
-}
-
-    </style>
-    <script>
-document.getElementById('menu-toggle').addEventListener('click', function() {
-    const sidebar = document.getElementById('sidebar');
-    const mainContent = document.querySelector('main'); // Konten utama
-    if (sidebar.classList.contains('-translate-x-full')) {
-        sidebar.classList.remove('-translate-x-full'); // Tampilkan sidebar
-        mainContent.classList.add('md:ml-64'); // Tambahkan margin kiri saat sidebar ditampilkan
-    } else {
-        sidebar.classList.add('-translate-x-full'); // Sembunyikan sidebar
-        mainContent.classList.remove('md:ml-64'); // Hilangkan margin kiri agar konten penuh
-    }
-});
-
-    </script> --}}
-
-@if(session('success'))
-<script>
-    Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: '{{ session("success") }}',
-        timer: 2000,
-        showConfirmButton: false
-    });
-</script>
-@endif
-
-@if(session('error'))
-<script>
-    Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: '{{ session("error") }}',
-        timer: 3000,
-        showConfirmButton: true
-    });
-</script>
-@endif
-
+    </div>
+    @yield('container')
+</main>
+    <script src="{{ asset('js/index.js') }}"></script>
+    @yield('js')
+</body>
 </html>
