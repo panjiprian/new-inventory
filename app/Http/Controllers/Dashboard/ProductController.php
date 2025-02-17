@@ -64,10 +64,17 @@ class ProductController extends Controller
         ]);
 
         // Menyimpan file gambar jika ada
-        $imagePath = $request->file('image') ? $request->file('image')->store('products') : null;
+        $imagePath = $request->file('image') ? $request->file('image')->store('products', 'public') : null;
 
-        // Ambil semua admin
+        // Ambil semua admin dengan role 'officer' yang memiliki nomor telepon
         $admins = User::where('role', 'officer')->whereNotNull('phone')->get();
+
+        if ($admins->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No admin with phone number found',
+            ], 400);
+        }
 
         // Pesan yang ingin dikirim
         $message = 'Produk baru telah ditambahkan: ' . $request->name . ' dengan harga Rp ' . number_format($request->price, 0, ',', '.');
@@ -77,15 +84,16 @@ class ProductController extends Controller
 
         try {
             // Kirim pesan ke setiap admin
-            // foreach ($admins as $admin) {
-            //     $phone = str_replace('+', '', $admin->phone);
-            //     $isSent = $this->kirimPesanWhatsapp($phone, $message);
+            foreach ($admins as $admin) {
+                $phone = str_replace('+', '', $admin->phone);
+                $isSent = $this->kirimPesanWhatsapp($phone, $message);
 
-            //     // Jika pengiriman pesan ke salah satu admin gagal, batalkan proses
-            //     if (!$isSent) {
-            //         throw new \Exception("Pesan WhatsApp gagal dikirim ke admin: " . $admin->name);
-            //     }
-            // }
+                // Jika pengiriman pesan ke salah satu admin gagal, batalkan proses
+                if (!$isSent) {
+                    \Illuminate\Support\Facades\Log::error("Failed to send WhatsApp message to admin: " . $admin->name);
+                    throw new \Exception("Pesan WhatsApp gagal dikirim ke admin: " . $admin->name);
+                }
+            }
 
             // Jika semua pesan berhasil, simpan produk
             $product = Product::create([
@@ -117,6 +125,7 @@ class ProductController extends Controller
             ], 500);
         }
     }
+
 
     public function edit($id)
     {

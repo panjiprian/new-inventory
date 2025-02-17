@@ -7,18 +7,54 @@
             <h1 class="text-gray-600 font-semibold">Overview</h1>
         </div>
         <div class="flex gap-4 mt-5">
-        <div class="bg-white rounded w-1/3 text-center hover:border-blue-500 p-10">
-            <h2 class="font-bold text-4xl">{{$countProducts}}</h2>
-            <p class="text-sm mt-2 text-gray-600">Product Data</p>
+            <!-- Statistic Cards -->
+            <div class="bg-white rounded w-1/3 text-center hover:border-blue-500 p-10 shadow-lg">
+                <h2 class="font-bold text-4xl">{{$countProducts}}</h2>
+                <p class="text-sm mt-2 text-gray-600">Product Data</p>
+            </div>
+            <div class="bg-white rounded w-1/3 text-center hover:border-blue-500 p-10 shadow-lg">
+                <h2 class="font-bold text-4xl">{{$countProductIncome}}</h2>
+                <p class="text-sm mt-2 text-gray-600">Incoming Goods</p>
+            </div>
+            <div class="bg-white rounded text-center hover:border-blue-500 w-1/3 p-10 shadow-lg">
+                <h2 class="font-bold text-4xl">{{$countProductOutcome}}</h2>
+                <p class="text-sm text-gray-600 mt-2">Outcoming Goods</p>
+            </div>
         </div>
-        <div class="bg-white rounded w-1/3 text-center hover:border-blue-500 p-10">
-            <h2 class="font-bold text-4xl">{{$countProductIncome}}</h2>
-          <p class="text-sm mt-2 text-gray-600">Incoming Goods</p>
-      </div>
-        <div class="bg-white rounded text-center hover:border-blue-500 w-1/3 p-10">
-              <h2 class="font-bold text-4xl">{{$countProductOutcome}}</h2>
-            <p class="text-sm text-gray-600 mt-2">Outcoming Goods</p>
+
+        <!-- Chart Section -->
+        <div class="mt-10">
+            <h2 class="text-gray-600 font-semibold mb-4">Inventory Overview</h2>
+            <div class="bg-white rounded-lg p-5 shadow-lg">
+                <canvas id="inventoryChart" class="w-full h-96"></canvas>
+            </div>
         </div>
     </div>
-   </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('inventoryChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Product Data', 'Incoming Goods', 'Outcoming Goods'],
+                datasets: [{
+                    label: 'Inventory Data',
+                    data: [{{$countProducts}}, {{$countProductIncome}}, {{$countProductOutcome}}],
+                    backgroundColor: ['#3B82F6', '#10B981', '#EF4444'],
+                    borderColor: ['#2563EB', '#059669', '#DC2626'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
 @endsection
