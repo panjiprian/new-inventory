@@ -84,16 +84,16 @@ class ProductController extends Controller
 
         try {
             // Kirim pesan ke setiap admin
-            foreach ($admins as $admin) {
-                $phone = str_replace('+', '', $admin->phone);
-                $isSent = $this->kirimPesanWhatsapp($phone, $message);
+            // foreach ($admins as $admin) {
+            //     $phone = str_replace('+', '', $admin->phone);
+            //     $isSent = $this->kirimPesanWhatsapp($phone, $message);
 
-                // Jika pengiriman pesan ke salah satu admin gagal, batalkan proses
-                if (!$isSent) {
-                    \Illuminate\Support\Facades\Log::error("Failed to send WhatsApp message to admin: " . $admin->name);
-                    throw new \Exception("Pesan WhatsApp gagal dikirim ke admin: " . $admin->name);
-                }
-            }
+            //     // Jika pengiriman pesan ke salah satu admin gagal, batalkan proses
+            //     if (!$isSent) {
+            //         \Illuminate\Support\Facades\Log::error("Failed to send WhatsApp message to admin: " . $admin->name);
+            //         throw new \Exception("Pesan WhatsApp gagal dikirim ke admin: " . $admin->name);
+            //     }
+            // }
 
             // Jika semua pesan berhasil, simpan produk
             $product = Product::create([
@@ -219,7 +219,7 @@ class ProductController extends Controller
             ->where('variant_id', $variantId)
             ->orderBy('id', 'desc')
             ->first();
-        // dd( $lastProduct);
+
         if ($lastProduct) {
             $lastCode = (int) ltrim(substr($lastProduct->code, -4), '0'); // Ambil angka terakhir tanpa menghapus nol
             $nextNumber = str_pad($lastCode + 1, 4, '0', STR_PAD_LEFT); // Tambahkan angka dan tetap 4 digit

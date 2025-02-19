@@ -140,7 +140,7 @@
                                 icon: "success",
                                 confirmButtonText: "OK"
                             }).then(() => {
-                                // window.location.href = "/barang";
+                                window.location.href = "/barang";
                             });
                         } else {
                             Swal.fire({

@@ -13,7 +13,8 @@ trait WhatsappTrait
         $url = $fileUrl ? 'https://wa.smartappscare.com/send-media' : 'https://wa.smartappscare.com/send-message';
 
         $api = 'TIXJobMR5VY9QrEGDKSofUnkRNdasW';
-        $sender = '6283167627589';
+        $admin = \App\Models\User::where('role', 'admin')->first();
+        $sender = $admin ? $admin->phone : '6283167627589';
 
         $data = [
             'api_key' => $api,

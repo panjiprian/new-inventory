@@ -65,24 +65,24 @@
                     </tbody>
                 </table>
             </div>
-            <script>
-                $(document).ready(function() {
-                    $('#supplierTabel').DataTable({
-                        "paging": true, // Mengaktifkan pagination
-                        "searching": true, // Mengaktifkan pencarian
-                        "lengthChange": false, // Menonaktifkan opsi untuk mengubah jumlah data per halaman
-                        "pageLength": 10, // Jumlah data per halaman default
-                        "info": false, // Menyembunyikan informasi total data
-                        "responsive": true, // Menambahkan responsivitas
-                        "order": [
-                            [1, "asc"]
-                        ], // Sorting default berdasarkan kolom kedua (Variant Code)
-                        "language": {
-                            "emptyTable": "No supplier available", // Pesan jika tabel kosong
-                            "search": "Search Supplier:" // Placeholder pencarian
-                        }
-                    });
-                });
-            </script>
         </div>
+        <script>
+            $(document).ready(function() {
+                $('#supplierTabel').DataTable({
+                    "paging": true, // Mengaktifkan pagination
+                    "searching": true, // Mengaktifkan pencarian
+                    "lengthChange": false, // Menonaktifkan opsi untuk mengubah jumlah data per halaman
+                    "pageLength": 10, // Jumlah data per halaman default
+                    "info": false, // Menyembunyikan informasi total data
+                    "responsive": true, // Menambahkan responsivitas
+                    "order": [
+                        [1, "asc"]
+                    ], // Sorting default berdasarkan kolom kedua (Variant Code)
+                    "language": {
+                        "emptyTable": "No supplier available", // Pesan jika tabel kosong
+                        "search": "Search Supplier:" // Placeholder pencarian
+                    }
+                });
+            });
+        </script>
     @endsection

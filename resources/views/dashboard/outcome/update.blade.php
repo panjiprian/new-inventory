@@ -1,62 +1,125 @@
 @extends('layouts.main')
 
 @section('container')
-<div class="container px-4">
-    <div class="bg-white p-5 mt-5 rounded-lg">
-        <div class="flex">
-            <h2 class="text-gray-600 font-bold">Update Dispatching Product</h2>
+<div class="container mx-auto max-w-4xl px-4">
+    <form id="update-outcome-form" class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md" method="POST" action="/ubah-barang-keluar/{{$productOutcome->id}}">
+        @csrf
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Update Dispatching Product</h2>
+
+        <!-- Product Name -->
+        <div class="mb-4">
+            <label for="product_id" class="block mb-1 text-sm font-medium text-gray-700">Product Name</label>
+            <select name="product_id" id="product_id"
+                class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
+                <option value="">-- Select a product --</option>
+                @foreach ($products as $product)
+                    <option value="{{ $product->id }}" {{ $productOutcome->product_id == $product->id ? 'selected' : '' }}>
+                        {{ $product->name }}
+                    </option>
+                @endforeach
+            </select>
         </div>
 
-        <form action="/ubah-barang-keluar/{{$productOutcome->id}}" method="POST" class="w-1/2 mt-5">
-            @csrf
-            <div class="flex gap-1 mt-3">
-                <div class="w-full">
-                    <label class="text-sm text-gray-600"  for="name">Product Name</label>
-                    <div class="border">
-                        {{-- select with choice js --}}
-                        <select name="product_id" data-id-product="{{$productOutcome->product_id}}"  class="select-product text-black" id="">
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="flex gap-1 mt-3">
-                <div class="w-full">
-                    <label class="text-sm text-gray-600"  for="category">Supplier</label>
-                    <div class="border">
-                        {{-- select with choice js --}}
-                        <select data-id-supplier="{{$productOutcome->supplier_id}}" name="supplier_id" class="select-supplier text-black" id="">
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-3">
-                <label class="text-sm text-gray-600" for="quantity">Dispatching Qty</label>
-                <div class="@error('quantity')  border-red-400  @enderror border-2 p-1">
-                    <input value="{{$productOutcome->quantity}}" name="quantity" autocomplete="off" class="text-sm text-black w-full h-full focus:outline-none" id="quantity" type="number">
-                </div>
-                @error('quantity')
-                    <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
-                @enderror
-            </div>
-            <div class="mt-3">
-                <label class="text-sm text-gray-600" for="date">Date</label>
-                <div class="@error('date')  border-red-400  @enderror border-2 p-1">
-                    <input value="{{$productOutcome->date}}" type="date" name="date" class="text-sm text-black w-full h-full focus:outline-none" id="date" type="text">
-                </div>
-                 @error('date')
-                    <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
-                @enderror
-            </div>
-            <div class="mt-3">
-                <button class="bg-gray-600 text-white w-full p-2 rounded text-sm">Update Data</button>
-            </div>
+        <!-- Supplier -->
+        <div class="mb-4">
+            <label for="supplier_id" class="block mb-1 text-sm font-medium text-gray-700">Supplier</label>
+            <select name="supplier_id" id="supplier_id"
+                class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
+                <option value="">-- Select a supplier --</option>
+                @foreach ($suppliers as $supplier)
+                    <option value="{{ $supplier->id }}" {{ $productOutcome->supplier_id == $supplier->id ? 'selected' : '' }}>
+                        {{ $supplier->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <!-- Quantity -->
+        <div class="mb-4">
+            <label for="quantity" class="block mb-1 text-sm font-medium text-gray-700">Dispatching Qty</label>
+            <input type="number" name="quantity" id="quantity" value="{{ $productOutcome->quantity }}" min="1"
+                class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
+        </div>
+
+        <!-- Date -->
+        <div class="mb-4">
+            <label for="date" class="block mb-1 text-sm font-medium text-gray-700">Date</label>
+            <input type="date" name="date" id="date" value="{{ $productOutcome->date }}"
+                class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex justify-between gap-4 mt-6">
+            <button type="submit"
+                class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1">
+                Update Data
+            </button>
+            <a href="/barang-keluar"
+                class="w-full text-center bg-red-600 text-white py-2 px-4 rounded-lg shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1">
+                Back
+            </a>
         </div>
     </form>
-    </div>
 </div>
-@endsection
+<script>
+    $(document).ready(function() {
+        $('#update-outcome-form').on('submit', function(e) {
+            e.preventDefault();
 
-@section('js')
-    <script src="{{ asset('js/supplies/update.js') }}"></script>
-@endsection
+            // Tampilkan SweetAlert saat proses pengiriman data
+            Swal.fire({
+                title: 'Processing...',
+                text: 'Please wait while we process your request.',
+                icon: 'info',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
+            let formData = new FormData(this);
+            let url = "/ubah-barang-keluar/{{ $productOutcome->id }}";
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Data Successfully Updated",
+                        icon: "success",
+                        confirmButtonText: "OK"
+                    }).then(() => {
+                        window.location.href = "/barang-keluar";
+                    });
+                },
+                error: function(xhr) {
+                    Swal.close();
+                    let errorMessages = "";
+                    let response = xhr.responseJSON;
+
+                    if (response && response.message) {
+                        errorMessages = response.message;
+                    } else if (response && response.errors) {
+                        $.each(response.errors, function(key, value) {
+                            errorMessages += value[0] + "\n";
+                        });
+                    } else {
+                        errorMessages = "Failed to update data!";
+                    }
+
+                    Swal.fire({
+                        title: "Error!",
+                        text: errorMessages,
+                        icon: "error"
+                    });
+                }
+            });
+        });
+    });
+</script>
+@endsection

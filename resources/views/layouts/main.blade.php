@@ -47,6 +47,8 @@
 
     <!-- DataTables -->
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.tailwind.min.js"></script>
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.tailwind.min.css" rel="stylesheet">
 
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -77,7 +79,7 @@
             </li>
             <li class="mb-1">
                 <a href="/supplier"
-                    class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition duration-200 ease-in-out">
+                class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition duration-200 ease-in-out">
                     <i class="ri-truck-line mr-3 text-lg"></i>
                     <span class="text-sm font-medium">Supplier Data</span>
                 </a>
@@ -96,22 +98,37 @@
                     <span class="text-sm font-medium">Variant</span>
                 </a>
             </li>
-            <li class="mb-1 mt-5">
-                <a href="/barang-masuk"
-                    class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition duration-200 ease-in-out">
-                    <i class="ri-arrow-down-circle-line mr-3 text-lg"></i>
-                    <span class="text-sm font-medium">Receiving</span>
-                </a>
-            </li>
-            <li class="mb-1">
-                <a href="/barang-keluar"
-                    class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition duration-200 ease-in-out">
-                    <i class="ri-arrow-up-circle-line mr-3 text-lg"></i>
-                    <span class="text-sm font-medium">Dispatching</span>
-                </a>
+            <li class="mb-1 mt-5 relative">
+                <button type="button" class="flex items-center justify-between w-full py-2 px-4 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition duration-200 ease-in-out" id="transaction-menu">
+                    <span class="flex items-center">
+                        <i class="ri-exchange-line mr-3 text-lg"></i>
+                        <span class="text-sm font-medium">Transaction Product</span>
+                    </span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </button>
+                <ul class="hidden flex-col mt-2 bg-gray-800 rounded-lg" id="transaction-dropdown">
+                    <li class="mb-1">
+                        <a href="/barang-masuk"
+                            class="block py-2 px-4 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition duration-200 ease-in-out">
+                            Receiving
+                        </a>
+                    </li>
+                    <li class="mb-1">
+                        <a href="/barang-keluar"
+                            class="block py-2 px-4 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition duration-200 ease-in-out">
+                            Dispatching
+                        </a>
+                    </li>
+                    <li class="mb-1">
+                        <a href="/laporan"
+                            class="block py-2 px-4 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition duration-200 ease-in-out">
+                            Report
+                        </a>
+                    </li>
+                </ul>
             </li>
             @if (Auth::user()->role === 'admin')
-                <li class="mb-1 mt-10">
+                <li class="mb-1 mt-5">
                     <a href="/petugas"
                         class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition duration-200 ease-in-out">
                         <i class="ri-user-line mr-3 text-lg"></i>
@@ -133,21 +150,18 @@
                     <span class="text-sm font-medium">Manual Book</span>
                 </a>
             </li>
-            <li class="mb-1">
-                <a href="/logout"
-                    class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition duration-200 ease-in-out">
-                    <i class="ri-logout-circle-line mr-3 text-lg"></i>
-                    <span class="text-sm font-medium">Logout</span>
-                </a>
-            </li>
         </ul>
     </div>
 
+    <!-- Main Content -->
     <main class="md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 min-h-screen">
-        <div
-            class="bg-white py-2 px-4 flex items-center justify-between shadow-md shadow-black/5 sticky top-0 left-0 z-30">
+        <div class="bg-white py-2 px-4 flex items-center justify-between shadow-md shadow-black/5 border-b sticky top-0 left-0 z-30">
             <div class="mr-2 flex items-center">
+                <i class="ri-user-line text-gray-600 mr-2"></i>
                 <p class="text-sm text-gray-600">{{ Auth::user()->name }}</p>
+            </div>
+            <div>
+                <a href="/logout" class="text-sm bg-gray-700 text-white py-1 px-3 rounded-lg hover:bg-gray-800 transition duration-200 ease-in-out">Logout</a>
             </div>
         </div>
         @yield('container')
@@ -155,5 +169,10 @@
     <script src="{{ asset('js/index.js') }}"></script>
     @yield('js')
 </body>
-
+<script>
+    document.getElementById('transaction-menu').addEventListener('click', function() {
+        const dropdown = document.getElementById('transaction-dropdown');
+        dropdown.classList.toggle('hidden');
+    });
+</script>
 </html>

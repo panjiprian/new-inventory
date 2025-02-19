@@ -93,17 +93,24 @@
                         });
                     },
                     error: function(xhr) {
-                        let errors = xhr.responseJSON.errors;
-                        let errorMessage = "";
-                        $.each(errors, function(key, value) {
-                            errorMessage += value + "<br>";
+                        Swal.close();
+                    let errorMessages = "";
+                    let response = xhr.responseJSON;
+                    if (response && response.message) {
+                        errorMessages = response.message;
+                    } else if (response && response.errors) {
+                        $.each(response.errors, function(key, value) {
+                            errorMessages += value[0] + "\n";
                         });
-                        Swal.fire({
-                            title: "Error!",
-                            html: errorMessage,
-                            icon: "error",
-                            confirmButtonText: "OK"
-                        });
+                    } else {
+                        errorMessages = "Failed to update data!";
+                    }
+
+                    Swal.fire({
+                        title: "Error!",
+                        text: errorMessages,
+                        icon: "error"
+                    });
                     }
                 });
             });

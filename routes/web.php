@@ -9,7 +9,8 @@ use App\Http\Controllers\Dashboard\ProductSuppliesController;
 use App\Http\Controllers\Dashboard\SupplierController;
 use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\VariantController;
-
+use App\Http\Controllers\Dashboard\ReportController;
+use App\Http\Controllers\ReportController as ControllersReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -86,7 +87,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/ubah-barang-masuk/{id}', [ProductSuppliesController::class, 'updateIncome']);
     Route::post('/input-barang-masuk', [ProductSuppliesController::class, 'storeIncome']);
     Route::delete('/hapus-barang-masuk/{id}', [ProductSuppliesController::class,'deleteProductSupply']);
-    Route::post('/generate-noproduct', [ProductController::class, 'generateNoproduct'])->name('generate-noproduct');
+
+    Route::get('/laporan',[ReportController::class,'index']);
+    Route::get('/laporan/download', [ReportController::class, 'downloadReport'])->name('report.download');
+    Route::get('/laporan/view', [ReportController::class, 'viewReport'])->name('report.view');
 
     Route::get('/barang-keluar', [ProductSuppliesController::class, 'indexOutcome']);
     Route::get('/input-barang-keluar', [ProductSuppliesController::class, 'createOutcome']);
