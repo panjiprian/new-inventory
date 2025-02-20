@@ -27,7 +27,7 @@
 
                     <button id="viewReportBtn"
                         class="text-sm bg-purple-600 text-white inline-block mt-2 px-4 py-2 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-4 focus:ring-purple-300 transition">
-                        Lihat Laporan
+                        View Report
                     </button>
                 </div>
             </div>

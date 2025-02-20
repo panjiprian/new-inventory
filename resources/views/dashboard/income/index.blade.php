@@ -18,10 +18,6 @@
                         class="text-sm bg-blue-600 text-white inline-block mt-2 px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
                         Input Receiving Product
                     </a>
-                    <a href="/excel/products-income"
-                        class="text-sm bg-green-600 text-white inline-block mt-2 px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300">
-                        Export Excel
-                    </a>
                 </div>
             </div>
 
@@ -70,21 +66,26 @@
         <script>
             $(document).ready(function() {
                 $('#productIncomeTable').DataTable({
-                    "paging": true, // Mengaktifkan pagination
-                    "searching": true, // Mengaktifkan pencarian
-                    "lengthChange": false, // Menonaktifkan opsi untuk mengubah jumlah data per halaman
-                    "pageLength": 10, // Jumlah data per halaman default
-                    "info": false, // Menyembunyikan informasi total data
-                    "responsive": true, // Menambahkan responsivitas
-                    "order": [
-                        [0, "asc"]
-                    ], // Sorting default berdasarkan kolom kedua (Product Name)
-                    "language": {
-                        "emptyTable": "No product income available", // Pesan jika tabel kosong
-                        "search": "Search Receiving Products:" // Placeholder pencarian
+                    paging: true, // Mengaktifkan pagination
+                    searching: true, // Mengaktifkan pencarian
+                    lengthChange: false, // Mengizinkan perubahan jumlah data per halaman
+                    pageLength: 10, // Default 10 data per halaman
+                    info: true, // Menampilkan informasi jumlah data
+                    responsive: true, // Menambahkan responsivitas
+                    columnDefs: [{
+                        orderable: false, // Nonaktifkan sorting untuk kolom Action
+                        targets: 6
+                    }],
+                    order: [
+                        [0, 'asc']
+                    ], // Urutkan berdasarkan kolom No
+                    language: {
+                        emptyTable: 'No product income available', // Pesan jika tabel kosong
+                        search: 'Search Receiving Products:' // Placeholder pencarian
                     }
                 });
             });
         </script>
+
     </div>
 @endsection

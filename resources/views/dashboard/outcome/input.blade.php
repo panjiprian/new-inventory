@@ -7,36 +7,53 @@
         <h2 class="text-xl font-semibold text-gray-700 mb-4">Input Dispatching Product</h2>
 
         <!-- Product Name -->
-        <div class="mb-4">
-            <label for="product_id" class="block mb-1 text-sm font-medium text-gray-700">Product Name</label>
-            <select name="product_id" id="product_id" class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
-                <option value="">-- Select a product --</option>
-                @foreach ($products as $product)
-                    <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>
-                        {{ $product->name }}
-                    </option>
-                @endforeach
-            </select>
-            @error('product_id')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-            @enderror
-        </div>
+            <!-- Product Name -->
+            <div class="mb-4 relative">
+                <label for="product_id" class="block mb-1 text-sm font-medium text-gray-700">Product Name</label>
+                <div class="relative">
+                    <input type="text" id="product_search" placeholder="Search product..."
+                        class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm"
+                        autocomplete="off" onfocus="showDropdown()" oninput="filterDropdown()" />
 
-        <!-- Supplier -->
-        <div class="mb-4">
-            <label for="supplier_id" class="block mb-1 text-sm font-medium text-gray-700">Supplier</label>
-            <select name="supplier_id" id="supplier_id" class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
-                <option value="">-- Select a supplier --</option>
-                @foreach ($suppliers as $supplier)
-                    <option value="{{ $supplier->id }}" {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>
-                        {{ $supplier->name }}
-                    </option>
-                @endforeach
-            </select>
-            @error('supplier_id')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-            @enderror
-        </div>
+                    <ul id="product_list"
+                        class="absolute bg-white border border-gray-300 rounded-lg shadow-lg w-full mt-1 hidden max-h-60 overflow-auto z-10">
+                        @foreach ($products as $product)
+                            <li class="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                                onclick="selectProduct('{{ $product->id }}', '{{ $product->name }}')">
+                                {{ $product->name }}
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+                <input type="hidden" name="product_id" id="product_id" />
+                @error('product_id')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Supplier -->
+            <div class="mb-4 relative">
+                <label for="supplier_id" class="block mb-1 text-sm font-medium text-gray-700">Supplier</label>
+                <div class="relative">
+                    <input type="text" id="supplier_search" placeholder="Search supplier..."
+                        class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm"
+                        autocomplete="off" onfocus="showSupplierDropdown()" oninput="filterSupplierDropdown()" />
+
+                    <ul id="supplier_list"
+                        class="absolute bg-white border border-gray-300 rounded-lg shadow-lg w-full mt-1 hidden max-h-60 overflow-auto z-10">
+                        @foreach ($suppliers as $supplier)
+                            <li class="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                                onclick="selectSupplier('{{ $supplier->id }}', '{{ $supplier->name }}')">
+                                {{ $supplier->name }}
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+                <input type="hidden" name="supplier_id" id="supplier_id" />
+                @error('supplier_id')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
 
         <!-- Dispatching Qty -->
         <div class="mb-4">
@@ -138,4 +155,72 @@
         });
     });
 </script>
+@section('js')
+    <script>
+        function showDropdown() {
+            document.getElementById('product_list').classList.remove('hidden');
+        }
+
+        function hideDropdown() {
+            document.getElementById('product_list').classList.add('hidden');
+        }
+
+        function filterDropdown() {
+            const searchInput = document.getElementById('product_search').value.toLowerCase();
+            const productItems = document.querySelectorAll('#product_list li');
+
+            productItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(searchInput) ? '' : 'none';
+            });
+        }
+
+        function selectProduct(productId, productName) {
+            document.getElementById('product_id').value = productId;
+            document.getElementById('product_search').value = productName;
+            hideDropdown();
+        }
+
+        // Sembunyikan dropdown saat klik di luar
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('product_list');
+            const searchInput = document.getElementById('product_search');
+            if (!dropdown.contains(event.target) && event.target !== searchInput) {
+                hideDropdown();
+            }
+        });
+        function showSupplierDropdown() {
+                document.getElementById('supplier_list').classList.remove('hidden');
+            }
+
+            function hideSupplierDropdown() {
+                document.getElementById('supplier_list').classList.add('hidden');
+            }
+
+            function filterSupplierDropdown() {
+                const searchInput = document.getElementById('supplier_search').value.toLowerCase();
+                const supplierItems = document.querySelectorAll('#supplier_list li');
+
+                supplierItems.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    item.style.display = text.includes(searchInput) ? '' : 'none';
+                });
+            }
+
+            function selectSupplier(supplierId, supplierName) {
+                document.getElementById('supplier_id').value = supplierId;
+                document.getElementById('supplier_search').value = supplierName;
+                hideSupplierDropdown();
+            }
+
+            // Sembunyikan dropdown supplier saat klik di luar
+            document.addEventListener('click', function(event) {
+                const dropdown = document.getElementById('supplier_list');
+                const searchInput = document.getElementById('supplier_search');
+                if (!dropdown.contains(event.target) && event.target !== searchInput) {
+                    hideSupplierDropdown();
+                }
+            });
+    </script>
+@endsection
 @endsection

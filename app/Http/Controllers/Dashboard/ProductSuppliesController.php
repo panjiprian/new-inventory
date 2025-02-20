@@ -14,33 +14,28 @@ class ProductSuppliesController extends Controller
 {
 
 
+
     public function indexIncome()
     {
-        $productsIncome = ProductSupplies::with(['product', 'user', 'supplier'])->where('type', '=', 'income')->paginate(10);
-        $productsIncome = ProductSupplies::all();
+        // Ambil semua data dengan type 'income' tanpa pagination
+        $productsIncome = ProductSupplies::with(['product', 'user', 'supplier'])
+            ->where('type', 'income')
+            ->get(); // Mengambil semua data tanpa pagination Laravel
+
         return view('dashboard.income.index', ['productsIncome' => $productsIncome]);
     }
 
+
     public function indexOutcome()
     {
-        $productsOutcome = ProductSupplies::with(['product', 'user', 'supplier'])->where('type', 'outcome')->paginate(10);
-        $productsOutcome = ProductSupplies::all();
+        // Ambil hanya data dengan type 'outcome' dan paginate
+        $productsOutcome = ProductSupplies::with(['product', 'user', 'supplier'])
+            ->where('type', 'outcome')
+            ->get(); // Mengambil semua data tanpa pagination Laravel
+
         return view('dashboard.outcome.index', ['productsOutcome' => $productsOutcome]);
     }
 
-    public function createIncome()
-    {
-        $suppliers = Supplier::all(); // Ambil semua data supplier
-        $products = Product::all();   // Ambil semua data produk jika diperlukan
-        return view('dashboard.income.input', compact('suppliers', 'products'));
-    }
-
-    public function createOutcome()
-    {
-        $suppliers = Supplier::all(); // Ambil semua data supplier
-        $products = Product::all();   // Ambil semua data produk jika diperlukan
-        return view('dashboard.outcome.input', compact('suppliers', 'products'));
-    }
 
     public function storeIncome(Request $request)
     {
