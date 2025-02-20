@@ -26,6 +26,8 @@ use App\Http\Controllers\ReportController as ControllersReportController;
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [OverviewController::class, 'index']);
+    Route::get('/overview/filtered-stock-trends', [OverviewController::class, 'getFilteredStockTrends'])->name('overview.filteredStockTrends');
+
     Route::get('/barang', [ProductController::class, 'index']);
     Route::get('/input-barang', [ProductController::class, 'create']);
     Route::delete('/hapus-barang/{id}', [ProductController::class, 'delete']);
@@ -88,16 +90,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/input-barang-masuk', [ProductSuppliesController::class, 'storeIncome']);
     Route::delete('/hapus-barang-masuk/{id}', [ProductSuppliesController::class,'deleteProductSupply']);
 
-    Route::get('/laporan',[ReportController::class,'index']);
-    Route::get('/laporan/download', [ReportController::class, 'downloadReport'])->name('report.download');
-    Route::get('/laporan/view', [ReportController::class, 'viewReport'])->name('report.view');
-
     Route::get('/barang-keluar', [ProductSuppliesController::class, 'indexOutcome']);
     Route::get('/input-barang-keluar', [ProductSuppliesController::class, 'createOutcome']);
     Route::post('/input-barang-keluar', [ProductSuppliesController::class, 'storeOutcome']);
     Route::delete('/hapus-barang-keluar/{id}', [ProductSuppliesController::class,'deleteProductSupply']);
     Route::get('/ubah-barang-keluar/{id}', [ProductSuppliesController::class, 'editOutcome']);
     Route::post('/ubah-barang-keluar/{id}', [ProductSuppliesController::class, 'updateOutcome']);
+
+    Route::get('/laporan',[ReportController::class,'index']);
+    Route::get('/laporan/download', [ReportController::class, 'downloadReport'])->name('report.download');
+    Route::get('/laporan/view', [ReportController::class, 'viewReport'])->name('report.view');
 
     Route::get('/logout',[AuthController::class, 'logout']);
 });

@@ -76,8 +76,8 @@
                     "info": false, // Menyembunyikan informasi total data
                     "responsive": true, // Menambahkan responsivitas
                     "order": [
-                        [1, "asc"]
-                    ], // Sorting default berdasarkan kolom kedua (Variant Code)
+                        [0, "asc"]
+                    ], // Sorting default berdasarkan kolom kedua
                     "language": {
                         "emptyTable": "No supplier available", // Pesan jika tabel kosong
                         "search": "Search Supplier:" // Placeholder pencarian

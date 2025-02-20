@@ -71,7 +71,11 @@
                 </table>
             </div>
         </div>
+        <div class="mt-5">
+            {{ $categories->links('pagination::tailwind') }}
+        </div>
     </div>
+
     <script>
         $(document).ready(function() {
             $('#categoryTabel').DataTable({
@@ -82,7 +86,7 @@
                 "info": false, // Menyembunyikan informasi total data
                 "responsive": true, // Menambahkan responsivitas
                 "order": [
-                    [1, "asc"]
+                    [0, "asc"]
                 ], // Sorting default berdasarkan kolom kedua (Variant Code)
                 "language": {
                     "emptyTable": "No category available", // Pesan jika tabel kosong

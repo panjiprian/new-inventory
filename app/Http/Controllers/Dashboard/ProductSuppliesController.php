@@ -17,12 +17,14 @@ class ProductSuppliesController extends Controller
     public function indexIncome()
     {
         $productsIncome = ProductSupplies::with(['product', 'user', 'supplier'])->where('type', '=', 'income')->paginate(10);
+        $productsIncome = ProductSupplies::all();
         return view('dashboard.income.index', ['productsIncome' => $productsIncome]);
     }
 
     public function indexOutcome()
     {
         $productsOutcome = ProductSupplies::with(['product', 'user', 'supplier'])->where('type', 'outcome')->paginate(10);
+        $productsOutcome = ProductSupplies::all();
         return view('dashboard.outcome.index', ['productsOutcome' => $productsOutcome]);
     }
 

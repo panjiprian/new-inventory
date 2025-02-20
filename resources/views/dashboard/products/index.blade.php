@@ -15,13 +15,15 @@
                     <h2 class="text-gray-800 font-bold text-lg">Product Data</h2>
                     @if (Auth::user()->role === 'admin')
                         <a href="/input-barang"
-                        class="text-sm bg-blue-600 text-white inline-block mt-2 px-4 py-2 rounded-md hover:bg-blue-700">
-                        Input Product</a>
+                            class="text-sm bg-blue-600 text-white inline-block mt-2 px-4 py-2 rounded-md hover:bg-blue-700">
+                            Input Product</a>
                     @endif
                     <a href="/excel/products"
-                    class="text-sm bg-green-600 text-white inline-block mt-2 px-4 py-2 rounded-md hover:bg-green-700">
+                        class="text-sm bg-green-600 text-white inline-block mt-2 px-4 py-2 rounded-md hover:bg-green-700">
                         Export Excel</a>
                 </div>
+            </div>
+            <div class="flex justify-end mt-5">
                 <form method="get" action="/barang" class="form">
                     <div class="border p-1 px-2 rounded flex items-center gap-2">
                         <input id="from_date" name="from_date" type="date" class="focus:outline-none text-sm w-20">
@@ -32,7 +34,6 @@
                     </div>
                 </form>
             </div>
-
             <table class="w-full mt-5 text-sm text-gray-600">
                 <thead>
                     <tr class="font-bold border-b-2 p-2">
@@ -138,7 +139,9 @@
                 </div>
             </div>
         </div>
-
+        <div class="mt-5">
+            {{ $products->links('pagination::tailwind') }}
+        </div>
     </div>
 
     <script>
@@ -160,7 +163,8 @@
                 $('#modal-product-price').text(productPrice);
                 $('#modal-product-category').text(productCategory);
                 $('#modal-product-variant').text(productVariant);
-                $('#modal-product-image').html(`<img src="${productImage}" alt="Product Image" class="w-32 h-auto mt-4 rounded">`);
+                $('#modal-product-image').html(
+                    `<img src="${productImage}" alt="Product Image" class="w-32 h-auto mt-4 rounded">`);
             });
             // Event untuk menampilkan modal detail
             $('.btn-detail-product').on('click', function(e) {

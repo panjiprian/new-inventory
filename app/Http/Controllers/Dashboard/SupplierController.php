@@ -11,13 +11,10 @@ use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
-    public function index (Request $request) {
-        if($request->has('search')){
-            $suppliers = Supplier::where('name', 'LIKE' ,"%{$request->search}%")->paginate(10);
-        } else {
-            $suppliers = Supplier::paginate(10);
-        }
-        return view('dashboard.supplier.index', ['suppliers'=> $suppliers]);
+    public function index()
+    {
+        $suppliers = Supplier::all(); // Ambil semua data tanpa paginate
+        return view('dashboard.supplier.index', compact('suppliers'));
     }
 
     public function delete ($id) {

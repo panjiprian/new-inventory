@@ -84,7 +84,7 @@
                 "info": false, // Menyembunyikan informasi total data
                 "responsive": true, // Menambahkan responsivitas
                 "order": [
-                    [1, "asc"]
+                    [0, "asc"]
                 ], // Sorting default berdasarkan kolom kedua (Variant Code)
                 "language": {
                     "emptyTable": "No variant available", // Pesan jika tabel kosong

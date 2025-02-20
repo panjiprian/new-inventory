@@ -46,7 +46,7 @@
                                 <td class="p-2 border border-gray-300">{{ $productOutcome->supplier->name }}</td>
                                 <td class="p-2 border border-gray-300">{{ $productOutcome->quantity }}</td>
                                 <td class="p-2 border border-gray-300">{{ $productOutcome->date }}</td>
-                                <td class="p-2 flex gap-2 justify-center items-center">
+                                <td class="p-2 flex justify-center items-center gap-2 border border-gray-300">
                                     <button data-id="{{ $productOutcome->id }}"
                                         class="btn-delete-product-outcome bg-red-600 py-1 px-4 rounded text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300">
                                         <i class="ri-delete-bin-line"></i>
@@ -74,7 +74,7 @@
                 "info": false, // Menyembunyikan informasi total data
                 "responsive": true, // Menambahkan responsivitas
                 "order": [
-                    [1, "asc"]
+                    [0, "asc"]
                 ], // Sorting default berdasarkan kolom kedua (Product Name)
                 "language": {
                     "emptyTable": "No dispatching product available", // Pesan jika tabel kosong

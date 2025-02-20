@@ -1,67 +1,147 @@
 @extends('layouts.main')
 
 @section('container')
-<div class="container px-4">
-    <div class="bg-white p-5 mt-5 rounded-lg">
-        <div class="flex">
-            <h2 class="text-gray-600 font-bold">Input Admin</h2>
-        </div>
-
-        <form action="/input-admin" method="POST" class="w-1/2 mt-5">
+    <div class="container mx-auto max-w-4xl px-4">
+        <form id="admin-form" class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
             @csrf
-            <div class="mt-3">
-                <label class="text-sm text-gray-600" for="name">Admin Name</label>
-                <div class="border-2 p-1 @error('name') border-red-400 @enderror">
-                    <input autocomplete="off" name="name" value="{{old('name')}}" class="w-full h-full focus:outline-none text-sm" id="name" type="text">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Add New Admin</h2>
+
+            <!-- Admin Name -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700" for="name">Admin Name</label>
+                <div class="relative mt-1">
+                    <input type="text" name="name" id="name" value="{{ old('name') }}"
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 @error('name') border-red-500 @enderror"
+                        placeholder="Enter admin name" />
                 </div>
-                @error('name')
-                    <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
-                @enderror
+                <p class="text-red-500 text-sm mt-1 italic error-message" id="error-name"></p>
             </div>
 
-            <div class="mt-3">
-                <label class="text-sm text-gray-600" for="email">Email</label>
-                <div class="border-2 p-1 @error('email') border-red-400 @enderror">
-                    <input autocomplete="off" type="email" value="{{old('email')}}" name="email" class="text-sm w-full h-full focus:outline-none" id="email">
+            <!-- Email -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700" for="email">Email</label>
+                <div class="relative mt-1">
+                    <input type="email" name="email" id="email" value="{{ old('email') }}"
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 @error('email') border-red-500 @enderror"
+                        placeholder="Enter email" />
                 </div>
-                @error('email')
-                    <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
-                @enderror
+                <p class="text-red-500 text-sm mt-1 italic error-message" id="error-email"></p>
             </div>
 
-            <div class="mt-3">
-                <label class="text-sm text-gray-600" for="phone">Phone Number</label>
-                <div class="border-2 p-1 @error('phone') border-red-400 @enderror">
-                    <input autocomplete="off" type="tel" name="phone" id="phone" class="text-sm w-full h-full focus:outline-none" value="+62">
-            <script>
-                document.getElementById("phone").addEventListener("input", function (e) {
-                    if (!e.target.value.startsWith("+62")) {
-                        e.target.value = "+62";
-                    }
-                });
-            </script>
+            <!-- Phone Number -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700" for="phone">Phone Number</label>
+                <div class="relative mt-1">
+                    <input type="tel" name="phone" id="phone" value="{{ old('phone', '+62') }}"
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 @error('phone') border-red-500 @enderror" />
                 </div>
-                @error('phone')
-                    <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
-                @enderror
+                <p class="text-red-500 text-sm mt-1 italic error-message" id="error-phone"></p>
             </div>
 
-            <div class="mt-3">
-                <label class="text-sm text-gray-600" for="password">Password</label>
-                <div class="border-2 p-1 @error('password') border-red-400 @enderror">
-                    <input autocomplete="off" type="password" name="password" class="text-sm w-full h-full focus:outline-none" id="password">
+            <!-- Password -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700" for="password">Password</label>
+                <div class="relative mt-1">
+                    <input type="password" name="password" id="password"
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 @error('password') border-red-500 @enderror"
+                        placeholder="Enter password" />
                 </div>
-                @error('password')
-                    <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
-                @enderror
+                <p class="text-red-500 text-sm mt-1 italic error-message" id="error-password"></p>
             </div>
 
-            <div class="mt-5">
-                <button class="bg-gray-600 w-full text-white py-2 rounded text-sm font-semibold">Save Data</button>
+            <!-- Action Buttons -->
+            <div class="flex justify-between gap-4 mt-6">
+                <button type="submit"
+                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1">
+                    Save Admin
+                </button>
+                <a href="/admin"
+                    class="w-full text-center bg-red-600 text-white py-2 px-4 rounded-lg shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1">
+                    Back
+                </a>
             </div>
         </form>
-
     </div>
-</div>
-@endsection
 
+    <!-- jQuery & SweetAlert -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#admin-form").submit(function (event) {
+                event.preventDefault(); // Mencegah reload halaman
+
+                // Menampilkan loading spinner
+                Swal.fire({
+                    title: 'Processing...',
+                    text: 'Please wait while we process your request.',
+                    icon: 'info',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                let formData = new FormData(this);
+
+                $.ajax({
+                    url: '/input-admin',
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        "X-CSRF-TOKEN": $('input[name="_token"]').val()
+                    },
+                    success: function (response) {
+                        Swal.close(); // Tutup SweetAlert loading spinner
+
+                        if (response.success) {
+                            Swal.fire({
+                                title: "Success!",
+                                text: response.message,
+                                icon: "success",
+                                confirmButtonText: "OK"
+                            }).then(() => {
+                                window.location.href = "/admin";
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: response.message || "Something went wrong!",
+                                icon: "error"
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        Swal.close(); // Tutup loading spinner
+
+                        $(".error-message").text(""); // Bersihkan pesan error sebelumnya
+                        let response = xhr.responseJSON;
+
+                        if (response && response.errors) {
+                            $.each(response.errors, function (key, value) {
+                                $("#error-" + key).text(value[0]); // Tampilkan error di bawah input terkait
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: "Failed to submit data!",
+                                icon: "error"
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Memastikan input phone number selalu diawali "+62"
+            $("#phone").on("input", function () {
+                if (!$(this).val().startsWith("+62")) {
+                    $(this).val("+62");
+                }
+            });
+        });
+    </script>
+@endsection
