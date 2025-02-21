@@ -36,6 +36,19 @@ class ProductSuppliesController extends Controller
         return view('dashboard.outcome.index', ['productsOutcome' => $productsOutcome]);
     }
 
+    public function createIncome()
+    {
+        $products = Product::all(); // Ambil semua produk dari database
+        $suppliers = Supplier::all(); //Ambil semua supplier dari database
+        return view('dashboard.income.input', compact('products', 'suppliers'));
+    }
+
+
+    public function createOutcome(){
+        $products = Product::all(); // Ambil semua produk dari database
+        $suppliers = Supplier::all(); //Ambil semua supplier dari database
+        return view('dashboard.outcome.input', compact('products', 'suppliers'));
+    }
 
     public function storeIncome(Request $request)
     {

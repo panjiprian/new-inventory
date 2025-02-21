@@ -72,7 +72,7 @@ class ProductController extends Controller
         if ($admins->isEmpty()) {
             return response()->json([
                 'success' => false,
-                'message' => 'No admin with phone number found',
+                'message' => 'No officer with phone number found',
             ], 400);
         }
 
@@ -83,7 +83,7 @@ class ProductController extends Controller
         DB::beginTransaction();
 
         try {
-            // Kirim pesan ke setiap admin
+            // // Kirim pesan ke setiap admin
             // foreach ($admins as $admin) {
             //     $phone = str_replace('+', '', $admin->phone);
             //     $isSent = $this->kirimPesanWhatsapp($phone, $message);

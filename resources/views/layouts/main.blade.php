@@ -144,12 +144,13 @@
                 </li>
             @endif
             <li class="mb-1 mt-5">
-                <a href="/"
+                <a href="{{ asset('storage/manuals/manual_book.pdf') }}" target="_blank"
                     class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition duration-200 ease-in-out">
                     <i class="ri-book-read-line mr-3 text-lg"></i>
                     <span class="text-sm font-medium">Manual Book</span>
                 </a>
             </li>
+
         </ul>
     </div>
 
