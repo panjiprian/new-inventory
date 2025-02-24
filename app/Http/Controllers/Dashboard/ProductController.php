@@ -64,10 +64,23 @@ class ProductController extends Controller
         ]);
 
         // Menyimpan file gambar jika ada
-        $imagePath = $request->file('image') ? $request->file('image')->store('products') : null;
+        $imagePath = $request->file('image') ? $request->file('image')->store('products', 'public') : null;
 
-        // Ambil semua admin
+        // Ambil semua admin dengan role 'officer' yang memiliki nomor telepon
         $admins = User::where('role', 'officer')->whereNotNull('phone')->get();
+
+        // Menghapus tanda "+" dari nomor telepon setiap admin
+        $admins = $admins->map(function ($admin) {
+            $admin->phone = ltrim($admin->phone, '+'); // Hapus tanda "+" jika ada
+            return $admin;
+        });
+
+        if ($admins->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No officer with phone number found',
+            ], 400);
+        }
 
         // Pesan yang ingin dikirim
         $message = 'Produk baru telah ditambahkan: ' . $request->name . ' dengan harga Rp ' . number_format($request->price, 0, ',', '.');
@@ -77,15 +90,16 @@ class ProductController extends Controller
 
         try {
             // Kirim pesan ke setiap admin
-            // foreach ($admins as $admin) {
-            //     $phone = str_replace('+', '', $admin->phone);
-            //     $isSent = $this->kirimPesanWhatsapp($phone, $message);
+            foreach ($admins as $admin) {
+                $phone = $admin->phone; // No longer need to strip "+" as it's already removed
+                $isSent = $this->kirimPesanWhatsapp($phone, $message);
 
-            //     // Jika pengiriman pesan ke salah satu admin gagal, batalkan proses
-            //     if (!$isSent) {
-            //         throw new \Exception("Pesan WhatsApp gagal dikirim ke admin: " . $admin->name);
-            //     }
-            // }
+                // Jika pengiriman pesan ke salah satu admin gagal, batalkan proses
+                if (!$isSent) {
+                    \Illuminate\Support\Facades\Log::error("Failed to send WhatsApp message to admin: " . $admin->name);
+                    throw new \Exception("Pesan WhatsApp gagal dikirim ke admin: " . $admin->name);
+                }
+            }
 
             // Jika semua pesan berhasil, simpan produk
             $product = Product::create([
@@ -117,6 +131,7 @@ class ProductController extends Controller
             ], 500);
         }
     }
+
 
     public function edit($id)
     {
@@ -157,7 +172,7 @@ class ProductController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Data Successfully Added!',
+                'message' => 'Data Successfully Updated!',
                 'data' => $product,
             ], 201);
         } catch (\Exception $e) {
@@ -210,7 +225,7 @@ class ProductController extends Controller
             ->where('variant_id', $variantId)
             ->orderBy('id', 'desc')
             ->first();
-        // dd( $lastProduct);
+
         if ($lastProduct) {
             $lastCode = (int) ltrim(substr($lastProduct->code, -4), '0'); // Ambil angka terakhir tanpa menghapus nol
             $nextNumber = str_pad($lastCode + 1, 4, '0', STR_PAD_LEFT); // Tambahkan angka dan tetap 4 digit

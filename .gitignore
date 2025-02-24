@@ -1,7 +1,6 @@
 /.phpunit.cache
 /node_modules
-/storage/*
-/storage/*.key
+/storage/public/products
 /storage/frameworks/views
 /storage/frameworks/cache
 /vendor

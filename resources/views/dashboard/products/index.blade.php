@@ -12,14 +12,18 @@
         <div class="bg-white mt-5 p-5 rounded-lg">
             <div class="flex justify-between">
                 <div class="text-left">
-                    <h2 class="text-gray-600 font-bold">Product Data</h2>
+                    <h2 class="text-gray-800 font-bold text-lg">Product Data</h2>
                     @if (Auth::user()->role === 'admin')
-                        <a href="/input-barang" class="text-sm inline-block bg-gray-700 text-white mt-2 px-2 py-1">Input
-                            Product</a>
+                        <a href="/input-barang"
+                            class="text-sm bg-blue-600 text-white inline-block mt-2 px-4 py-2 rounded-md hover:bg-blue-700">
+                            Input Product</a>
                     @endif
-                    <a class="text-sm bg-gray-700 text-white inline-block mt-2 px-2 py-1" href="/excel/products">Export
-                        Excel</a>
+                    <a href="/excel/products"
+                        class="text-sm bg-green-600 text-white inline-block mt-2 px-4 py-2 rounded-md hover:bg-green-700">
+                        Export Excel</a>
                 </div>
+            </div>
+            <div class="flex justify-end mt-5">
                 <form method="get" action="/barang" class="form">
                     <div class="border p-1 px-2 rounded flex items-center gap-2">
                         <input id="from_date" name="from_date" type="date" class="focus:outline-none text-sm w-20">
@@ -30,7 +34,6 @@
                     </div>
                 </form>
             </div>
-
             <table class="w-full mt-5 text-sm text-gray-600">
                 <thead>
                     <tr class="font-bold border-b-2 p-2">
@@ -64,14 +67,6 @@
                             </td>
                             @if (Auth::user()->role === 'admin')
                                 <td class="p-2 flex gap-2">
-                                    <button data-id="{{ $product->id }}"
-                                        class="btn-delete-product bg-red-500 py-1 px-4 rounded text-white">
-                                        <i class="ri-delete-bin-line"></i>
-                                    </button>
-                                    <a href="/ubah-barang/{{ $product->id }}"
-                                        class="bg-yellow-400 py-1 px-4 rounded text-white">
-                                        <i class="ri-edit-box-line"></i>
-                                    </a>
                                     <button data-modal-target="default-modal" data-modal-toggle="default-modal"
                                         data-code="{{ $product->code }}" data-name="{{ $product->name }}"
                                         data-description="{{ $product->description }}"
@@ -82,7 +77,14 @@
                                         class="bg-blue-400 py-1 px-4 rounded text-white" type="button">
                                         <i class="ri-eye-line"></i>
                                     </button>
-
+                                    <a href="/ubah-barang/{{ $product->id }}"
+                                        class="bg-yellow-400 py-1 px-4 rounded text-white">
+                                        <i class="ri-edit-box-line"></i>
+                                    </a>
+                                    <button data-id="{{ $product->id }}"
+                                        class="btn-delete-product bg-red-500 py-1 px-4 rounded text-white">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
                                 </td>
                             @endif
                         </tr>
@@ -136,7 +138,9 @@
                 </div>
             </div>
         </div>
-
+        <div class="mt-5">
+            {{ $products->links('pagination::tailwind') }}
+        </div>
     </div>
 
     <script>
@@ -158,7 +162,8 @@
                 $('#modal-product-price').text(productPrice);
                 $('#modal-product-category').text(productCategory);
                 $('#modal-product-variant').text(productVariant);
-                $('#modal-product-image').html(`<img src="${productImage}" alt="Product Image" class="w-32 h-auto mt-4 rounded">`);
+                $('#modal-product-image').html(
+                    `<img src="${productImage}" alt="Product Image" class="w-32 h-auto mt-4 rounded">`);
             });
             // Event untuk menampilkan modal detail
             $('.btn-detail-product').on('click', function(e) {

@@ -9,19 +9,30 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function admin () {
-        $admins = User::where('role', 'admin')->paginate(10);
-        return view('dashboard.admin.index', ['admins'=>$admins]);
+    public function admin(Request $request) {
+        $query = User::where('role', 'admin');
+
+        if ($request->has('search')) {
+            $query->where('name', 'LIKE', "%{$request->search}%");
+        }
+
+        $admins = $query->get(); // Mengambil semua data tanpa pagination
+
+        return view('dashboard.admin.index', ['admins' => $admins]);
     }
 
-    public function officer (Request $request) {
-        if($request->has('search')){
-        $officers = User::where('name', 'LIKE', "%{$request->search}%")->where('role', 'officer')->paginate(10);
-        } else {
-        $officers = User::where('role', 'officer')->paginate(10);
+    public function officer(Request $request) {
+        $query = User::where('role', 'officer');
+
+        if ($request->has('search')) {
+            $query->where('name', 'LIKE', "%{$request->search}%");
         }
-        return view('dashboard.officer.index', ['officers'=>$officers]);
+
+        $officers = $query->get(); // Mengambil semua data tanpa pagination
+
+        return view('dashboard.officer.index', ['officers' => $officers]);
     }
+
 
     public function delete($id) {
         $user = User::findOrFail($id);
@@ -65,11 +76,12 @@ class UserController extends Controller
 
     public function updateOfficer (Request $request, $id) {
         $this->validate($request, [
-                'name'=>['required'],
-                'email'=>['required'],
-                'password'=>['required'],
-                'phone' => 'nullable|regex:/^\+62[0-9]{9,13}$/'
+            'name' => ['required'],
+            'email' => ['required'],
+            'password' => ['nullable'], // Ganti dari 'required' ke 'nullable'
+            'phone' => 'nullable|regex:/^\+62[0-9]{9,13}$/'
         ]);
+
 
         $officer = User::findOrFail($id);
 
@@ -125,30 +137,33 @@ class UserController extends Controller
     }
 
     public function updateAdmin (Request $request, $id) {
-    $this->validate($request, [
-            'name'=>['required'],
-            'email'=>['required'],
-    ]);
+        $this->validate($request, [
+            'name' => ['required'],
+            'email' => ['required'],
+            'password' => ['nullable'], // Opsional, hanya jika ingin diubah
+            'phone' => 'nullable|regex:/^\+62[0-9]{9,13}$/'
+        ]);
 
-    $admin = User::findOrFail($id);
+        $admin = User::findOrFail($id);
 
-    if($request->has('password')) {
-        $password = Hash::make($request->password);
-    } else {
-        $password = $admin->password;
+        if ($request->filled('password')) {
+            $password = Hash::make($request->password);
+        } else {
+            $password = $admin->password;
+        }
+
+        $updated = $admin->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $password,
+            'role' => 'admin',
+            'phone' => $request->phone
+        ]);
+
+        if ($updated) {
+            return redirect('/admin')->with('message', 'Data Successfully Updated');
+        }
     }
 
-    $updated = $admin->update([
-        'name'=>$request->name,
-        'email'=>$request->email,
-        'password'=>$password,
-        'role'=>'admin',
-        'phone' => $request->phone
-    ]);
-
-    if($updated){
-        return redirect('/admin')->with('message','Data Successfully Updated');
-    }
-    }
 
 }

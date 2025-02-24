@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\CategoryExport;
 use Illuminate\Http\Request;
@@ -16,11 +17,15 @@ class CategoryController extends Controller
         $query = Category::query()
             ->leftJoin('users as creator', 'categories.created_by', '=', 'creator.id')
             ->leftJoin('users as updater', 'categories.updated_by', '=', 'updater.id')
-            ->select('categories.*', 'creator.name as creator_name', 'updater.name as updater_name');
+            ->select(
+                'categories.*',
+                'creator.name as creator_name',
+                'updater.name as updater_name'
+            );
 
         if ($request->has('search')) {
             $query->where('categories.name', 'LIKE', "%{$request->search}%")
-                  ->orWhere('categories.code', 'LIKE', "%{$request->search}%");
+                ->orWhere('categories.code', 'LIKE', "%{$request->search}%");
         }
 
         $categories = $query->paginate($request->input('per_page', 10));
@@ -45,13 +50,23 @@ class CategoryController extends Controller
 
         $validated['created_by'] = Auth::user()->id;
 
-        $created = Category::create($validated);
+        try {
+            $created = Category::create($validated);
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Successfully Added!',
+                'data' => $created,
+            ], 201);
+        } catch (\Exception $e) {
+            // Rollback transaksi jika terjadi error
+            DB::rollback();
 
-        return response()->json([
-            'success' => (bool) $created,
-            'message' => $created ? 'Category Successfully Added' : 'Failed to add category',
-            'redirect' => $created ? url('/kategori') : null
-        ], $created ? 200 : 500);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function edit($id)
@@ -74,14 +89,25 @@ class CategoryController extends Controller
 
         $validated['updated_by'] = Auth::user()->id;
 
-        $updated = $category->update($validated);
+        try {
+            $updated = $category->update($validated);
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Successfully Updated!',
+                'data' => $updated,
+            ], 201);
+        } catch (\Exception $e) {
+            // Rollback transaksi jika terjadi error
+            DB::rollback();
 
-        return response()->json([
-            'success' => (bool) $updated,
-            'message' => $updated ? 'Category Successfully Updated' : 'Failed to update category',
-            'redirect' => $updated ? url('/kategori') : null
-        ], $updated ? 200 : 500);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ], 500);
+        }
     }
+
 
     public function delete($id)
     {

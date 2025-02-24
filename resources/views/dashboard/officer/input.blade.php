@@ -1,73 +1,96 @@
 @extends('layouts.main')
 
 @section('container')
-<div class="container px-4">
-    <div class="bg-white p-5 mt-5 rounded-lg">
-        <div class="flex">
-            <h2 class="text-gray-600 font-bold">Input Officer</h2>
-        </div>
-
-        <form action="/input-petugas" method="POST" class="w-1/2 mt-5">
+    <div class="container mx-auto max-w-4xl px-4">
+        <form action="/input-petugas" method="POST" class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
             @csrf
-            <div class="mt-3">
-                <label class="text-sm text-gray-600" for="name">Officer Name</label>
-                <div class="border-2 p-1 @error('name') border-red-400 @enderror">
-                    <input autocomplete="off" name="name" value="{{ old('name') }}"
-                        class="w-full h-full focus:outline-none text-sm" id="name" type="text" required>
-                </div>
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Add New Officer</h2>
+            <!-- Officer Name -->
+            <div class="mb-4 relative">
+                <label for="name" class="block text-sm font-medium text-gray-700">Officer Name</label>
+                <input type="text" id="name" name="name" value="{{ old('name') }}"
+                    class="mt-1 block w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 @error('name') border-red-400 @enderror"
+                    required>
                 @error('name')
-                    <p class="italic text-red-500 text-sm mt-1">{{ $message }}</p>
+                    <p class="text-red-500 text-xs mt-1 italic">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div class="mt-3">
-                <label class="text-sm text-gray-600" for="email">Email</label>
-                <div class="@error('email') border-red-400 @enderror border-2 p-1">
-                    <input autocomplete="off" type="email" value="{{ old('email') }}"
-                        name="email" class="text-sm w-full h-full focus:outline-none" id="email" required>
-                </div>
+            <!-- Email -->
+            <div class="mb-4 relative">
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" id="email" name="email" value="{{ old('email') }}"
+                    class="mt-1 block w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 @error('email') border-red-400 @enderror"
+                    required>
                 @error('email')
-                    <p class="italic text-red-500 text-sm mt-1">{{ $message }}</p>
+                    <p class="text-red-500 text-xs mt-1 italic">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div class="mt-3">
-                <label class="text-sm text-gray-600" for="phone">Phone Number</label>
-                <div class="border-2 p-1 @error('phone') border-red-400 @enderror">
-                    <input autocomplete="off" type="tel" name="phone" id="phone" class="text-sm w-full h-full focus:outline-none" value="+62">
-            <script>
-                document.getElementById("phone").addEventListener("input", function (e) {
-                    if (!e.target.value.startsWith("+62")) {
-                        e.target.value = "+62";
-                    }
-                });
-            </script>
-                </div>
+            <!-- Phone Number -->
+            <div class="mb-4 relative">
+                <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                <input type="tel" id="phone" name="phone" value="+62"
+                    class="mt-1 block w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 @error('phone') border-red-400 @enderror">
+                <script>
+                    document.getElementById("phone").addEventListener("input", function(e) {
+                        if (!e.target.value.startsWith("+62")) {
+                            e.target.value = "+62";
+                        }
+                    });
+                </script>
                 @error('phone')
-                    <p class="italic text-red-500 text-sm mt-1">{{$message}}</p>
+                    <p class="text-red-500 text-xs mt-1 italic">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div class="mt-3">
-                <label class="text-sm text-gray-600" for="password">Password</label>
-                <div class="@error('password') border-red-400 @enderror border-2 p-1">
-                    <input autocomplete="off" type="password" name="password"
-                        class="text-sm w-full h-full focus:outline-none" id="password" required>
-                </div>
+            <!-- Password -->
+            <div class="mb-4 relative">
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="password" name="password"
+                    class="mt-1 block w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 @error('password') border-red-400 @enderror"
+                    required>
                 @error('password')
-                    <p class="italic text-red-500 text-sm mt-1">{{ $message }}</p>
+                    <p class="text-red-500 text-xs mt-1 italic">{{ $message }}</p>
                 @enderror
             </div>
 
-            <!-- Hidden input untuk role -->
+            <!-- Hidden Role -->
             <input type="hidden" name="role" value="officer">
 
-            <div class="mt-3">
-                <button class="bg-gray-600 w-full text-white p-2 rounded text-sm">Save Data</button>
+            <!-- Action Buttons -->
+            <div class="flex justify-between gap-4 mt-6">
+                <button type="submit"
+                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1">
+                    Save Officer
+                </button>
+                <a href="/petugas"
+                    class="w-full text-center bg-red-600 text-white py-2 px-4 rounded-lg shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1">
+                    Back
+                </a>
             </div>
         </form>
-
     </div>
-</div>
-@endsection
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let phoneInput = document.getElementById("phone");
 
+            if (!phoneInput.value.startsWith("+62")) {
+                phoneInput.value = "+62";
+            }
+
+            phoneInput.addEventListener("input", function() {
+                if (!this.value.startsWith("+62")) {
+                    this.value = "+62";
+                }
+                this.value = this.value.replace(/[^0-9+]/g, "");
+            });
+
+            phoneInput.addEventListener("focus", function() {
+                if (this.value === "+62") {
+                    this.setSelectionRange(3, 3);
+                }
+            });
+        });
+    </script>
+@endsection

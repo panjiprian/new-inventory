@@ -1,74 +1,88 @@
 @extends('layouts.main')
 
 @section('container')
-
-@if (session('message'))
-   <div id="toast-container" class="hidden fixed z-50 items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded border-l-2 border-green-400 shadow top-5 right-5 dark:text-gray-400 dark:divide-gray-700 space-x dark:bg-gray-800" role="alert">
-    <div class=" text-green-400 text-sm font-bold capitalize">{{session()->get('message')}}</div>
-</div>
-@endif
+    @if (session('message'))
+        <div id="toast-container"
+            class="hidden fixed z-50 items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded border-l-2 border-green-400 shadow top-5 right-5 dark:text-gray-400 dark:divide-gray-700 space-x dark:bg-gray-800"
+            role="alert">
+            <div class=" text-green-400 text-sm font-bold capitalize">{{ session()->get('message') }}</div>
+        </div>
+    @endif
     <div class="w-full flex-wrap gap-4">
-        <div class="bg-white mt-5 p-5 rounded-lg">
-            <div class="flex justify-between">
+        <div class="bg-white mt-5 p-5 rounded-lg shadow-lg">
+            <div class="flex justify-between items-center">
                 <div class="text-left">
-                    <h2 class="text-gray-600 font-bold">Supplier Data</h2>
-                    @if(Auth::user()->role === 'admin')
-                    <a href="/input-supplier" class="text-sm inline-block bg-gray-700 text-white mt-2 px-2 py-1">Input Supplier</a>
+                    <h2 class="text-gray-800 font-bold text-lg">Suppliers</h2>
+                    @if (Auth::user()->role === 'admin')
+                        <a href="/input-supplier"
+                            class="text-sm bg-blue-600 text-white inline-block mt-2 px-4 py-2 rounded-md hover:bg-blue-700">
+                            Input Supplier
+                        </a>
                     @endif
-                    <a  class="text-sm bg-gray-700 text-white inline-block mt-2 px-2 py-1" href="/excel/suppliers">Export Excel</a>
+                    <a href="/excel/suppliers"
+                        class="text-sm bg-green-600 text-white inline-block mt-2 px-4 py-2 rounded-md hover:bg-green-700">
+                        Export Excel</a>
                 </div>
-                <form method="get" action="/supplier" class="form">
-                    <div class="flex">
-                        <div class="border p-1 px-2 rounded-l">
-                          <input id="search" name="search" class="focus:outline-none text-sm" type="text" placeholder="Search Supplier">
-                        </div>
-                        <button type="submit" class="text-sm bg-gray-700 p-2 rounded-r text-white h-full">Search</button>
-                    </div>
-                </form>
             </div>
 
-            <table class="w-full mt-5 text-sm text-gray-600">
-                <thead>
-                    <tr class="font-bold border-b-2 p-2">
-                        <td class="p-2">No</td>
-                        <td class="p-2">Supplier Name</td>
-                        <td class="p-2">Address</td>
-                        <td class="p-2">Email</td>
-                        <td class="p-2">Phone Number</td>
-                        <td class="p-2">Action</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php
-                        $noSupplier = 1;
-                    @endphp
-                    @foreach ($suppliers as $supplier)
-                        <tr class="border-b p-2">
-                        <td class="p-2">{{$loop->iteration}}</td>
-                        <td class="p-2">{{$supplier->name}}</td>
-                        <td class="p-2">{{$supplier->address}}</td>
-                        <td class="p-2">{{$supplier->email}}</td>
-                        <td class="p-2">{{$supplier->phone}}</td>
-                        @if(Auth::user()->role === 'admin')
-                        <td class="p-2 flex gap-2">
-                            <button data-id="{{$supplier->id}}" class="btn-delete-supplier bg-red-500 py-1 px-4 rounded text-white">
-                                <i class="ri-delete-bin-line"></i>
-                            </button>
-                            <a href="/ubah-supplier/{{$supplier->id}}" class="bg-yellow-400 py-1 px-4 rounded text-white">
-                                <i class="ri-edit-box-line"></i>
-                            </a>
-                        </td>
-                        @endif
-                    </tr>
-                    @php
-                        $noSupplier++;
-                    @endphp
-                    @endforeach
-                </tbody>
-            </table>
-            <div class="mt-5">
-                {{$suppliers->links('pagination::tailwind')}}
+            <!-- Table Section -->
+            <div class="containerTabelSupplier mt-5 overflow-x-auto">
+                <table id="supplierTabel"
+                    class="min-w-full text-sm text-left text-gray-700 border-collapse border border-gray-200">
+                    <thead>
+                        <tr class="font-bold bg-gray-100 text-gray-700 border-b-2 border-gray-300">
+                            <td class="p-2 border border-gray-300">No</td>
+                            <td class="p-2 border border-gray-300">Supplier Name</td>
+                            <td class="p-2 border border-gray-300">Address</td>
+                            <td class="p-2 border border-gray-300">Email</td>
+                            <td class="p-2 border border-gray-300">Phone Number</td>
+                            <td class="p-2 border border-gray-300">Action</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($suppliers as $supplier)
+                            <tr class="border-b border-gray-300">
+                                <td class="p-2 border border-gray-300">{{ $loop->iteration }}</td>
+                                <td class="p-2 border border-gray-300">{{ $supplier->name }}</td>
+                                <td class="p-2 border border-gray-300">{{ $supplier->address }}</td>
+                                <td class="p-2 border border-gray-300">{{ $supplier->email }}</td>
+                                <td class="p-2 border border-gray-300">{{ $supplier->phone }}</td>
+
+                                @if (Auth::user()->role === 'admin')
+                                    <td class="p-2 flex justify-center items-center gap-2 border border-gray-300">
+                                        <button data-id="{{ $supplier->id }}"
+                                            class="btn-delete-supplier bg-red-600 py-1 px-4 rounded text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300">
+                                            <i class="ri-delete-bin-line"></i>
+                                        </button>
+                                        <a href="/ubah-supplier/{{ $supplier->id }}"
+                                            class="bg-yellow-500 py-1 px-4 rounded text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300">
+                                            <i class="ri-edit-box-line"></i>
+                                        </a>
+                                    </td>
+                                @endif
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
-    </div>
-@endsection
+        <script>
+            $(document).ready(function() {
+                $('#supplierTabel').DataTable({
+                    "paging": true, // Mengaktifkan pagination
+                    "searching": true, // Mengaktifkan pencarian
+                    "lengthChange": false, // Menonaktifkan opsi untuk mengubah jumlah data per halaman
+                    "pageLength": 10, // Jumlah data per halaman default
+                    "info": false, // Menyembunyikan informasi total data
+                    "responsive": true, // Menambahkan responsivitas
+                    "order": [
+                        [0, "asc"]
+                    ], // Sorting default berdasarkan kolom kedua
+                    "language": {
+                        "emptyTable": "No supplier available", // Pesan jika tabel kosong
+                        "search": "Search Supplier:" // Placeholder pencarian
+                    }
+                });
+            });
+        </script>
+    @endsection
