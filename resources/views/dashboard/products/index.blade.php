@@ -67,14 +67,6 @@
                             </td>
                             @if (Auth::user()->role === 'admin')
                                 <td class="p-2 flex gap-2">
-                                    <button data-id="{{ $product->id }}"
-                                        class="btn-delete-product bg-red-500 py-1 px-4 rounded text-white">
-                                        <i class="ri-delete-bin-line"></i>
-                                    </button>
-                                    <a href="/ubah-barang/{{ $product->id }}"
-                                        class="bg-yellow-400 py-1 px-4 rounded text-white">
-                                        <i class="ri-edit-box-line"></i>
-                                    </a>
                                     <button data-modal-target="default-modal" data-modal-toggle="default-modal"
                                         data-code="{{ $product->code }}" data-name="{{ $product->name }}"
                                         data-description="{{ $product->description }}"
@@ -85,7 +77,14 @@
                                         class="bg-blue-400 py-1 px-4 rounded text-white" type="button">
                                         <i class="ri-eye-line"></i>
                                     </button>
-
+                                    <a href="/ubah-barang/{{ $product->id }}"
+                                        class="bg-yellow-400 py-1 px-4 rounded text-white">
+                                        <i class="ri-edit-box-line"></i>
+                                    </a>
+                                    <button data-id="{{ $product->id }}"
+                                        class="btn-delete-product bg-red-500 py-1 px-4 rounded text-white">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
                                 </td>
                             @endif
                         </tr>

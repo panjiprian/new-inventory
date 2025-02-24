@@ -18,6 +18,7 @@ class ReportController extends Controller
 
         return view('dashboard.report.index', compact('report'));
     }
+
     public function downloadReport()
     {
         // Ambil data report
@@ -31,7 +32,7 @@ class ReportController extends Controller
     }
 
     public function viewReport()
-{
+    {
     // Ambil data report
     $report = ProductSupplies::with(['product', 'supplier', 'user'])->orderBy('date', 'desc')->get();
 
@@ -40,6 +41,6 @@ class ReportController extends Controller
 
     // Stream PDF ke browser
     return $pdf->stream('report.pdf');
-}
+    }
 
 }

@@ -69,6 +69,12 @@ class ProductController extends Controller
         // Ambil semua admin dengan role 'officer' yang memiliki nomor telepon
         $admins = User::where('role', 'officer')->whereNotNull('phone')->get();
 
+        // Menghapus tanda "+" dari nomor telepon setiap admin
+        $admins = $admins->map(function ($admin) {
+            $admin->phone = ltrim($admin->phone, '+'); // Hapus tanda "+" jika ada
+            return $admin;
+        });
+
         if ($admins->isEmpty()) {
             return response()->json([
                 'success' => false,
@@ -83,17 +89,17 @@ class ProductController extends Controller
         DB::beginTransaction();
 
         try {
-            // // Kirim pesan ke setiap admin
-            // foreach ($admins as $admin) {
-            //     $phone = str_replace('+', '', $admin->phone);
-            //     $isSent = $this->kirimPesanWhatsapp($phone, $message);
+            // Kirim pesan ke setiap admin
+            foreach ($admins as $admin) {
+                $phone = $admin->phone; // No longer need to strip "+" as it's already removed
+                $isSent = $this->kirimPesanWhatsapp($phone, $message);
 
-            //     // Jika pengiriman pesan ke salah satu admin gagal, batalkan proses
-            //     if (!$isSent) {
-            //         \Illuminate\Support\Facades\Log::error("Failed to send WhatsApp message to admin: " . $admin->name);
-            //         throw new \Exception("Pesan WhatsApp gagal dikirim ke admin: " . $admin->name);
-            //     }
-            // }
+                // Jika pengiriman pesan ke salah satu admin gagal, batalkan proses
+                if (!$isSent) {
+                    \Illuminate\Support\Facades\Log::error("Failed to send WhatsApp message to admin: " . $admin->name);
+                    throw new \Exception("Pesan WhatsApp gagal dikirim ke admin: " . $admin->name);
+                }
+            }
 
             // Jika semua pesan berhasil, simpan produk
             $product = Product::create([

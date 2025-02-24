@@ -15,7 +15,7 @@ trait WhatsappTrait
         $api = 'TIXJobMR5VY9QrEGDKSofUnkRNdasW';
         $admin = \App\Models\User::where('role', 'admin')->first();
         $sender = $admin ? $admin->phone : '6283167627589';
-
+        $sender = ltrim($sender, '+');
         $data = [
             'api_key' => $api,
             'sender' => $sender,
