@@ -12,7 +12,7 @@ trait WhatsappTrait
     {
         $url = $fileUrl ? 'https://wa.smartappscare.com/send-media' : 'https://wa.smartappscare.com/send-message';
 
-        $api = 'TIXJobMR5VY9QrEGDKSofUnkRNdasW';
+        $api = 'gCGULUJjQFm2mIvOdyhFdXqiNMfNJN';
         $admin = \App\Models\User::where('role', 'admin')->first();
         $sender = $admin ? $admin->phone : '6283167627589';
         $sender = ltrim($sender, '+');

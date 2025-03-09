@@ -68,12 +68,12 @@ class ProductController extends Controller
 
         // Ambil semua admin dengan role 'officer' yang memiliki nomor telepon
         $admins = User::where('role', 'officer')->whereNotNull('phone')->get();
-
         // Menghapus tanda "+" dari nomor telepon setiap admin
         $admins = $admins->map(function ($admin) {
             $admin->phone = ltrim($admin->phone, '+'); // Hapus tanda "+" jika ada
             return $admin;
         });
+        // dd($admins);
 
         if ($admins->isEmpty()) {
             return response()->json([
