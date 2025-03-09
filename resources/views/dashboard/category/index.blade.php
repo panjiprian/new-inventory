@@ -20,7 +20,7 @@
                             Input Category
                         </a>
                     @endif
-                    <a href="/excel/categories"
+                    <a href="/excel/kategori"
                         class="text-sm bg-green-600 text-white inline-block mt-2 px-4 py-2 rounded-md hover:bg-green-700">
                         Export Excel
                     </a>

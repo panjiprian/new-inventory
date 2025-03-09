@@ -20,7 +20,7 @@
                             Input Variant
                         </a>
                     @endif
-                    <a href="/excel/variants"
+                    <a href="/excel/varian"
                         class="text-sm bg-green-600 text-white inline-block mt-2 px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300">
                         Export Excel
                     </a>

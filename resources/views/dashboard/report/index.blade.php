@@ -15,10 +15,10 @@
                 <div class="text-left">
                     <h2 class="text-gray-800 font-bold text-lg">Report</h2>
 
-                    <button href="/excel/variants"
+                    {{-- <button href="/excel/variants"
                         class="text-sm bg-green-600 text-white inline-block mt-2 px-4 py-2 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 transition">
                         Export Excel
-                    </button>
+                    </button> --}}
 
                     <button id="downloadReportBtn"
                         class="text-sm bg-blue-600 text-white inline-block mt-2 px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition">

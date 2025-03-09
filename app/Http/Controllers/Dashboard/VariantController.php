@@ -29,7 +29,7 @@ class VariantController extends Controller
 
         if ($request->has('search')) {
             $query->where('variants.name', 'LIKE', "%{$request->search}%")
-                  ->orWhere('variants.code', 'LIKE', "%{$request->search}%");
+                ->orWhere('variants.code', 'LIKE', "%{$request->search}%");
         }
 
         $variants = $query->paginate($request->input('per_page', 10));

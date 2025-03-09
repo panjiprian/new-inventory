@@ -10,7 +10,11 @@ class Variant extends Model
     use HasFactory;
 
     protected $fillable = [
-        'category_id', 'name', 'code', 'created_by', 'updated_by'
+        'category_id',
+        'name',
+        'code',
+        'created_by',
+        'updated_by'
     ];
 
     public function category()
