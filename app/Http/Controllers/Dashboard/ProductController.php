@@ -54,7 +54,7 @@ class ProductController extends Controller
     {
         // Validasi request
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'unique:products,name'],
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric'],
             'image' => ['nullable', 'image', 'max:1024'],
@@ -82,6 +82,17 @@ class ProductController extends Controller
             ], 400);
         }
 
+        $existingProduct = Product::where('name', $request->name)
+            ->where('category_id', $request->category_id)
+            ->where('variant_id', $request->variant_id)
+            ->first();
+
+        if ($existingProduct) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Produk dengan nama yang sama sudah ada dalam kategori dan varian ini.',
+            ], 400);
+        }
         // Pesan yang ingin dikirim
         $message = 'Produk baru telah ditambahkan: ' . $request->name . ' dengan harga Rp ' . number_format($request->price, 0, ',', '.');
 
@@ -90,16 +101,16 @@ class ProductController extends Controller
 
         try {
             // Kirim pesan ke setiap admin
-            foreach ($admins as $admin) {
-                $phone = $admin->phone; // No longer need to strip "+" as it's already removed
-                $isSent = $this->kirimPesanWhatsapp($phone, $message);
+            // foreach ($admins as $admin) {
+            //     $phone = $admin->phone; // No longer need to strip "+" as it's already removed
+            //     $isSent = $this->kirimPesanWhatsapp($phone, $message);
 
-                // Jika pengiriman pesan ke salah satu admin gagal, batalkan proses
-                if (!$isSent) {
-                    \Illuminate\Support\Facades\Log::error("Failed to send WhatsApp message to admin: " . $admin->name);
-                    throw new \Exception("Pesan WhatsApp gagal dikirim ke admin: " . $admin->name);
-                }
-            }
+            //     // Jika pengiriman pesan ke salah satu admin gagal, batalkan proses
+            //     if (!$isSent) {
+            //         \Illuminate\Support\Facades\Log::error("Failed to send WhatsApp message to admin: " . $admin->name);
+            //         throw new \Exception("Pesan WhatsApp gagal dikirim ke admin: " . $admin->name);
+            //     }
+            // }
 
             // Jika semua pesan berhasil, simpan produk
             $product = Product::create([
