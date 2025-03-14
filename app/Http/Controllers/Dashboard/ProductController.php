@@ -101,16 +101,16 @@ class ProductController extends Controller
 
         try {
             // Kirim pesan ke setiap admin
-            // foreach ($admins as $admin) {
-            //     $phone = $admin->phone; // No longer need to strip "+" as it's already removed
-            //     $isSent = $this->kirimPesanWhatsapp($phone, $message);
+            foreach ($admins as $admin) {
+                $phone = $admin->phone; // No longer need to strip "+" as it's already removed
+                $isSent = $this->kirimPesanWhatsapp($phone, $message);
 
-            //     // Jika pengiriman pesan ke salah satu admin gagal, batalkan proses
-            //     if (!$isSent) {
-            //         \Illuminate\Support\Facades\Log::error("Failed to send WhatsApp message to admin: " . $admin->name);
-            //         throw new \Exception("Pesan WhatsApp gagal dikirim ke admin: " . $admin->name);
-            //     }
-            // }
+                // Jika pengiriman pesan ke salah satu admin gagal, batalkan proses
+                if (!$isSent) {
+                    \Illuminate\Support\Facades\Log::error("Failed to send WhatsApp message to admin: " . $admin->name);
+                    throw new \Exception("Pesan WhatsApp gagal dikirim ke admin: " . $admin->name);
+                }
+            }
 
             // Jika semua pesan berhasil, simpan produk
             $product = Product::create([
